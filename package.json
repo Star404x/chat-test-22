@@ -1,17 +1,16 @@
 {
   "name": "node-chat",
   "version": "1.0.0",
+  "private": true,
   "description": "Simple Node.js chat with Socket.IO",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "start:index": "node index.js",
     "dev": "nodemon server.js",
-    "test:manual": "echo Follow the manual testing steps in README.md"
+    "test:manual": "node scripts/manual-test.js"
   },
-  "author": "",
-  "license": "MIT",
   "devDependencies": {
-    "nodemon": "^2.0.22"
+    "nodemon": "^2.0.22",
+    "socket.io-client": "^4.7.2"
   }
 }
