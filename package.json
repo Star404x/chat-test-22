@@ -1,0 +1,17 @@
+{
+  "name": "node-chat",
+  "version": "1.0.0",
+  "description": "Simple Node.js chat with Socket.IO",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "start:index": "node index.js",
+    "dev": "nodemon server.js",
+    "test:manual": "echo Follow the manual testing steps in README.md"
+  },
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  }
+}
