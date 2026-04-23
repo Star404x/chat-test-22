@@ -2,24 +2,20 @@
   "name": "node-chat",
   "version": "1.0.0",
   "description": "Simple real-time chat using Socket.IO",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
-    "start": "node index.js",
-    "dev": "nodemon index.js --watch .",
-    "test": "echo \"No automated tests configured\" && exit 0",
-    "lint": "eslint . || true"
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "manual-test": "node test/manual-test.js"
   },
-  "keywords": [
-    "chat",
-    "socket.io",
-    "node"
-  ],
-  "author": "",
-  "license": "MIT",
+  "dependencies": {
+    "socket.io-client": "^4.7.2"
+  },
   "devDependencies": {
     "nodemon": "^2.0.22"
   },
   "engines": {
     "node": ">=14"
-  }
+  },
+  "license": "MIT"
 }
