@@ -1,62 +1,170 @@
-simple-chat — простой real-time чат на Node.js + Socket.IO
+# dockertest
 
-Кратко
-- Реальное приложение: сервер на Node.js + Socket.IO, клиент (статические файлы) в public/
+Минимальный проект для тестирования контейнеризации и CI с Docker.
 
-Требования
-- Node.js 14+ и npm
-- Git
+## Описание
 
-Установка
-1) Клонируйте репозиторий:
-   git clone <repo-url>
-   cd simple-chat
-2) Установите зависимости:
-   npm install
+Простое Node.js-приложение. Этот репозиторий содержит инструкции по локальной разработке, сборке Docker-образа, запуску контейнера и тестированию.
 
-Локальный запуск (ручная проверка)
-- Если в проекте есть package.json с командами, используйте их:
-  npm run dev    # для разработки (nodemon/перезагрузка)
-  npm start      # для продакшена
-- Если таких команд нет, запустите напрямую:
-  node server.js
+## Требования
 
-Проверка работы (ручная)
-1) Запустите сервер на локальной машине (по умолчанию PORT=3000):
-   PORT=3000 node server.js
-2) Откройте в браузере http://localhost:3000 (или путь к клиенту, например public/index.html)
-3) Откройте ещё одно окно/вкладку или другой браузер и подключитесь к той же странице
-4) Отправьте сообщение в одном клиенте — оно должно появиться у других в реальном времени
-5) Проверьте сценарии:
-   - Подключение нескольких клиентов
-   - Отключение/повторное подключение клиента
-   - Отправка пустых сообщений / специальных символов
-   - Поведение при перезагрузке сервера
-6) Логи сервера — смотрите консоль, проверяйте обработку ошибок
+- Node.js >= 14
+- npm
+- Docker
+- (опционально) docker-compose
 
-Деплой (рекомендации)
-1) Переменные окружения:
-   - PORT — порт сервера
-   - NODE_ENV=production
-2) Запуск с менеджером процессов (рекомендуется):
-   npm install -g pm2
-   pm2 start server.js --name simple-chat -i max --env production
-3) Обратный прокси (nginx) — проксирование запросов на порт приложения и настройка SSL
-4) Docker (пример):
-   Создайте Dockerfile, затем:
-   docker build -t simple-chat:latest .
-   docker run -d -p 80:3000 --env PORT=3000 --name simple-chat simple-chat:latest
+## Установка и локальный запуск
 
-Автоматизация коммитов в dev/auto (локально)
-- В проект добавлен скрипт scripts/prepareCommits.js
-- Использование:
-  node scripts/prepareCommits.js "коммит сообщение"
-- Скрипт переключается по очереди на ветки dev и auto, добавляет изменения, делает коммит (если есть изменения) и пушит в origin.
+1. Установите зависимости:
 
-Примечания по безопасности
-- Никогда не храните секреты в репозитории. Используйте .env или секреты CI.
 
-Если что-то не работает
-- Проверьте логи сервера
-- Убедитесь, что клиент подключается к тому же адресу/порту
-- Убедитесь, что зависимости установлены
+npm install
+
+
+2. Запустите приложение локально:
+
+
+npm start
+
+
+По умолчанию приложение слушает порт 3000 (http://localhost:3000).
+
+## Тестирование
+
+Запуск тестов локально:
+
+
+npm test
+
+
+Если в проекте используются дополнительные тестовые утилиты, убедитесь, что они прописаны в package.json.
+
+## Docker — сборка и запуск
+
+1. Сборка образа:
+
+
+docker build -t dockertest:latest .
+
+
+2. Запуск контейнера (порт 3000):
+
+
+docker run --rm -p 3000:3000 --name dockertest_local dockertest:latest
+
+
+Флаг `--rm` удалит контейнер после остановки. Для фонового режима добавьте `-d`.
+
+3. Пример с переменными окружения:
+
+
+docker run --rm -p 3000:3000 -e NODE_ENV=production -e PORT=3000 dockertest:latest
+
+
+4. Просмотр логов запущенного контейнера:
+
+
+docker logs -f dockertest_local
+
+
+5. Остановка контейнера:
+
+
+docker stop dockertest_local
+
+
+## Тестирование в контейнере
+
+Можно запустить тесты внутри контейнера (если образ содержит dev-зависимости или multistage поддерживает тесты):
+
+
+docker run --rm dockertest:latest npm test
+
+
+Если в образе нет dev-зависимостей, можно собрать отдельный образ для тестов или монтировать код и запускать `npm test` в контейнере с образом node:
+
+
+docker run --rm -v "$(pwd)":/app -w /app node:16 npm install && npm test
+
+
+## Docker Compose
+
+Пример docker-compose-команды для быстрого запуска (если в проекте есть docker-compose.yml):
+
+
+docker-compose up --build
+
+
+Остановка и удаление ресурсов:
+
+
+docker-compose down
+
+
+## CI (пример для GitHub Actions)
+
+Ниже — минимальный пример workflow для запуска сборки и тестов в CI. Создайте файл `.github/workflows/ci.yml` и используйте:
+
+
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '16'
+      - name: Install dependencies
+        run: npm ci
+      - name: Run tests
+        run: npm test
+      - name: Build Docker image
+        run: docker build -t myorg/dockertest:${{ github.sha }} .
+      # опционально: push to registry (требует настроенных secrets)
+      # - name: Login to DockerHub
+      #   run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+      # - name: Push image
+      #   run: docker push myorg/dockertest:${{ github.sha }}
+
+
+Этот пример выполняет установку зависимостей, тесты и сборку образа. Для публикации образа добавьте шаги логина и push.
+
+## Полезные команды
+
+- Просмотр образов:
+
+
+docker images
+
+
+- Удаление образа:
+
+
+docker rmi <image-id-or-name>
+
+
+- Удаление остановленных контейнеров:
+
+
+docker container prune
+
+
+## Рекомендации
+
+- Используйте multistage Dockerfile для уменьшения размера финального образа.
+- В CI выполняйте `npm ci` вместо `npm install` для воспроизводимости.
+- Настройте workflow для сборки и пуша образов в приватный/публичный реестр при успешной сборке на main.
+
+## Контакты
+
+Если что-то не работает — откройте issue с описанием шага воспроизведения и логами.
