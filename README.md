@@ -1,91 +1,50 @@
-# dockertest
+# ExpressAPI Test 2
 
-Краткий проект для тестирования контейнеризации и CI с Docker (Node.js).
+Minimal Express API with automated tests and CI to validate endpoints and workflows.
 
-Содержит минимальные инструкции для сборки, запуска и тестирования как локально, так и в контейнере.
+Badges
+- CI: (add your CI badge here)
+- npm: (add npm badge if published)
+
+Overview
+This repository contains a small Express-based API used to demonstrate endpoint behavior, automated tests, and CI workflows.
+
+Key goals
+- Small, testable endpoints
+- Clear API documentation
+- Ready for collaboration (branching, PRs, code style)
 
 Prerequisites
-- Node.js >= 14
-- npm или yarn
-- Docker
+- Node.js 16+ and npm
 
-Структура проекта (ожидается)
-- package.json (скрипты: start, test)
-- index.js или app.js (сервер)
-- Dockerfile
+Quick start
+1. Install dependencies
+   npm install
 
-Основные команды
+2. Start the app
+   npm start
 
-1) Установка зависимостей (локально)
+   The server listens on PORT environment variable or 3000 by default.
 
-npm install
-# или
-# yarn
+3. Run tests
+   npm test
 
-2) Локальный запуск приложения
+Project layout
+- src/index.js — main Express application
+- docs/API.md — API reference
+- package.json — scripts and metadata
 
-npm start
-# по умолчанию приложение доступно на http://localhost:3000 (если в коде используется PORT=3000)
+Collaboration guidelines
+- Branching: feature/*, fix/*, chore/*
+- Commit messages: use conventional commits style (feat:, fix:, docs:, chore:, test:)
+- Open PRs against main (or default branch) with description of changes and test results
+- Add tests for new endpoints or behaviors
 
-3) Запуск тестов локально
+Testing and CI
+- npm test runs Jest. Add a CI workflow (e.g. GitHub Actions) to run npm ci and npm test on push and PR.
 
-npm test
+Bumped version
+- Version bumped to 0.2.0 to reflect docs and collaboration prep.
 
-Docker: сборка и запуск
-
-1) Сборка Docker-образа
-
-docker build -t dockertest:latest .
-
-2) Запуск контейнера
-
-# Проброс порта 3000 (пример)
-docker run --rm -p 3000:3000 --name dockertest_app dockertest:latest
-
-3) Запуск с переменными окружения
-
-docker run --rm -p 3000:3000 -e PORT=4000 dockertest:latest
-
-Запуск тестов внутри контейнера
-
-# собрать образ, затем выполнить npm test внутри контейнера
-docker build -t dockertest:latest .
-
-docker run --rm dockertest:latest npm test
-
-# или запустить одноразовый контейнер, монтируя код (полезно для локальной отладки)
-
-docker run --rm -v "$PWD":/app -w /app node:14 npm test
-
-Примеры команд (сокращённо)
-- Установка: npm install
-- Локальный запуск: npm start
-- Тесты: npm test
-- Сборка Docker: docker build -t dockertest:latest .
-- Запуск Docker: docker run --rm -p 3000:3000 dockertest:latest
-- Тесты в Docker: docker run --rm dockertest:latest npm test
-
-Советы и отладка
-- Проверьте, что в package.json есть скрипты "start" и "test".
-- Если порт отличается, указывайте PORT при запуске: PORT=4000 npm start или -e PORT=4000 при docker run.
-- Для CI полезно запускать: docker build ... && docker run --rm dockertest:latest npm test
-
-Опционально: docker-compose
-
-Если хотите добавить docker-compose.yml, можно использовать пример:
-
-version: '3.8'
-services:
-  app:
-    build: .
-    ports:
-      - "3000:3000"
-    environment:
-      - NODE_ENV=production
-
-CI/CD
-- В CI настроить шаги: установка (или кеш npm), сборка Docker-образа, запуск тестов (в образе или в окружении CI).
-- Примерный pipeline: checkout -> npm ci -> npm test -> docker build -> push
-
-Контакты
-- Этот README предназначен для быстрого старта. Дальше можно добавить подробности по конфигурации, тестам и образам.
+License
+MIT

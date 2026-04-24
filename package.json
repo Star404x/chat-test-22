@@ -1,13 +1,24 @@
 {
-  "name": "express-api-test1",
-  "version": "0.1.0",
-  "description": "Minimal Express API to demonstrate basic endpoints, validation, and automated tests",
+  "name": "expressapi-test-2",
+  "version": "0.2.0",
+  "description": "Minimal Express API with tests and CI to validate endpoints and workflows",
   "main": "src/index.js",
   "scripts": {
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
-    "test": "jest --runInBand"
+    "test": "jest --runInBand",
+    "lint": "eslint .",
+    "ci": "npm test"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/your-org/expressapi-test-2.git"
+  },
+  "keywords": [
+    "express",
+    "api",
+    "test"
+  ],
   "author": "",
   "license": "MIT",
   "dependencies": {
@@ -16,6 +27,7 @@
   "devDependencies": {
     "jest": "^29.0.0",
     "supertest": "^6.3.0",
-    "nodemon": "^2.0.20"
+    "nodemon": "^2.0.0",
+    "eslint": "^8.0.0"
   }
 }
