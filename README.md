@@ -1,62 +1,57 @@
-simple-chat
+# simple-chat
 
 Простой real-time чат на Node.js с использованием Socket.IO.
 
-Prerequisites
+Требования
 - Node.js >= 14
-- npm
+- npm или yarn
 
-Запуск локально
-1. Установите зависимости:
+Установка
+1. Клонируйте репозиторий:
+   git clone <repo-url>
+2. Перейдите в папку проекта:
+   cd simple-chat
+3. Установите зависимости:
    npm install
+   или
+   yarn
 
-2. Запустите сервер:
-   - Если в package.json прописан скрипт start:
-       npm start
-   - Иначе (по умолчанию):
-       node server.js
-   - В режиме разработки (если установлен nodemon):
-       npx nodemon server.js
+Запуск в режиме разработки
+1. Запустите сервер:
+   npm run start
+   или
+   node index.js
+2. Откройте в браузере http://localhost:3000 (или порт, указанный в переменной окружения PORT)
+3. Откройте второе окно/вкладку и подключитесь, чтобы проверить обмен сообщениями в реальном времени.
 
-3. Откройте клиентскую часть в браузере (если клиент статичен, откройте index.html в корне или используйте сервер, который раздаёт статические файлы).
+Пример npm-скриптов (если не настроены):
+- start: node index.js
+- dev: nodemon index.js
 
-Ручная проверка (quick checklist)
-- Убедитесь, что сервер запускается без ошибок.
-- Откройте два окна/вкладки браузера и подключитесь к серверу.
-- Отправьте сообщение из одного окна — оно должно появиться в другом практически мгновенно.
-- Проверьте подключение/отключение пользователей и корректность ошибок в логах.
-- При необходимости проверьте работу при открытых нескольких соединениях и при отправке больших сообщений.
+Развёртывание
+Вариант 1 — PM2 (простая prod-опция):
+1. Установите pm2 глобально: npm i -g pm2
+2. Запустите: pm2 start index.js --name simple-chat
+3. Просмотр логов: pm2 logs simple-chat
 
-Deployment (примерные шаги)
-- Heroku:
-  1) Создайте Procfile в корне проекта: web: node server.js
-  2) heroku create
-  3) git push heroku main
-  4) heroku config:set NODE_ENV=production
+Вариант 2 — Docker (рекомендуется для контейнеризации):
+1. Создайте Dockerfile (пример):
+   FROM node:16-alpine
+   WORKDIR /app
+   COPY package*.json ./
+   RUN npm ci --only=production
+   COPY . .
+   EXPOSE 3000
+   CMD ["node", "index.js"]
+2. Соберите образ: docker build -t simple-chat:latest .
+3. Запустите контейнер: docker run -p 3000:3000 --env PORT=3000 simple-chat:latest
 
-- PM2 (на собственном сервере):
-  npm install -g pm2
-  pm2 start server.js --name simple-chat
-  pm2 save
+Переменные окружения
+- PORT — порт, на котором слушает сервер (по умолчанию 3000)
+- NODE_ENV — окружение (development/production)
 
-- Railway / Render / Vercel: следуйте их документации, укажите команду старта node server.js или npm start.
-
-Git / подготовка коммитов в dev и auto
-- Вручную:
-  git checkout -b dev
-  git add -A
-  git commit -m "chore(dev): manual check and docs"
-  git push origin dev
-
-  git checkout -b auto
-  git add -A
-  git commit -m "chore(auto): manual check and docs"
-  git push origin auto
-
-- С использованием helper-скрипта (node):
-  node scripts/prepare_commits.js "chore(dev): message" "chore(auto): message"
-  опция --push добавит пуш в origin: node scripts/prepare_commits.js "msg1" "msg2" --push
+Мониторинг и логирование
+- Для production рекомендуется использовать PM2, Docker + лог-агрегатор или систему, совместимую с вашим хостинг-провайдером.
 
 Примечания
-- Скрипт prepare_commits.js не выполняет автоматическое мерджение — он переключается на ветки dev и auto, делает коммит при изменениях и (опционально) пушит.
-- Убедитесь, что у вас есть доступ к репозиторию и правильно настроены удалённые origin.
+- Убедитесь, что WebSocket/Socket.IO порты и прокси (nginx) сконфигурированы для проксирования WebSocket.
