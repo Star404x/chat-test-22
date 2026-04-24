@@ -1,170 +1,116 @@
 # dockertest
 
-Минимальный проект для тестирования контейнеризации и CI с Docker.
+Минимальный проект для тестирования контейнеризации и CI с Docker (Node.js).
 
-## Описание
+## Обзор
 
-Простое Node.js-приложение. Этот репозиторий содержит инструкции по локальной разработке, сборке Docker-образа, запуску контейнера и тестированию.
+Простой Node.js-приложение, которое можно запускать локально или в контейнере. README содержит команды для сборки, запуска и тестирования, а также примеры работы с Docker и docker-compose.
 
-## Требования
+## Предпосылки
 
-- Node.js >= 14
+- Node.js (v14+)
 - npm
 - Docker
 - (опционально) docker-compose
 
-## Установка и локальный запуск
+## Быстрый старт (локально)
 
 1. Установите зависимости:
 
+$ npm install
 
-npm install
+2. Запуск приложения локально:
 
+$ npm start
 
-2. Запустите приложение локально:
+По умолчанию приложение слушает порт 3000 (если проект настроен иначе — см. package.json/app).
 
+3. Запуск тестов локально:
 
-npm start
+$ npm test
 
+(Ожидается, что в package.json определён скрипт "test".)
 
-По умолчанию приложение слушает порт 3000 (http://localhost:3000).
+## Сборка Docker-образа
 
-## Тестирование
+В корне репозитория должен быть Dockerfile. Для сборки образа выполните:
 
-Запуск тестов локально:
+$ docker build -t dockertest:latest .
 
+Примеры вариантов тега: dockertest:1.0.0, registry.example.com/yourorg/dockertest:latest
 
-npm test
+## Запуск контейнера
 
+Запустить контейнер и пробросить порт 3000:
 
-Если в проекте используются дополнительные тестовые утилиты, убедитесь, что они прописаны в package.json.
+$ docker run --rm -p 3000:3000 --name dockertest_container dockertest:latest
 
-## Docker — сборка и запуск
+Запуск в фоне (detach):
 
-1. Сборка образа:
+$ docker run -d -p 3000:3000 --name dockertest_container dockertest:latest
 
+Посмотреть логи:
 
-docker build -t dockertest:latest .
+$ docker logs -f dockertest_container
 
+Остановить и удалить контейнер:
 
-2. Запуск контейнера (порт 3000):
+$ docker stop dockertest_container
 
+## Пример с environment-переменными
 
-docker run --rm -p 3000:3000 --name dockertest_local dockertest:latest
+$ docker run --rm -p 3000:3000 -e NODE_ENV=production -e PORT=3000 dockertest:latest
 
+## docker-compose (опционально)
 
-Флаг `--rm` удалит контейнер после остановки. Для фонового режима добавьте `-d`.
+Пример docker-compose.yml (если добавите файл):
 
-3. Пример с переменными окружения:
+version: "3.8"
+services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
 
+Запуск:
 
-docker run --rm -p 3000:3000 -e NODE_ENV=production -e PORT=3000 dockertest:latest
+$ docker-compose up --build
 
+Запуск в фоне:
 
-4. Просмотр логов запущенного контейнера:
+$ docker-compose up -d --build
 
+Остановить и удалить контейнеры:
 
-docker logs -f dockertest_local
+$ docker-compose down
 
+## Команды для отладки образов и контейнеров
 
-5. Остановка контейнера:
+- Список образов: $ docker images
+- Список контейнеров: $ docker ps -a
+- Подключиться в работающий контейнер (если в образе есть sh/bash):
+  $ docker exec -it <container_id_or_name> sh
 
+## Тестирование в CI
 
-docker stop dockertest_local
+Рекомендуется настроить CI (например, GitHub Actions / GitLab CI) для автоматической сборки Docker-образа и запуска тестов. Базовый pipeline должен:
 
-
-## Тестирование в контейнере
-
-Можно запустить тесты внутри контейнера (если образ содержит dev-зависимости или multistage поддерживает тесты):
-
-
-docker run --rm dockertest:latest npm test
-
-
-Если в образе нет dev-зависимостей, можно собрать отдельный образ для тестов или монтировать код и запускать `npm test` в контейнере с образом node:
-
-
-docker run --rm -v "$(pwd)":/app -w /app node:16 npm install && npm test
-
-
-## Docker Compose
-
-Пример docker-compose-команды для быстрого запуска (если в проекте есть docker-compose.yml):
-
-
-docker-compose up --build
-
-
-Остановка и удаление ресурсов:
-
-
-docker-compose down
-
-
-## CI (пример для GitHub Actions)
-
-Ниже — минимальный пример workflow для запуска сборки и тестов в CI. Создайте файл `.github/workflows/ci.yml` и используйте:
-
-
-name: CI
-
-on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
-
-jobs:
-  build-and-test:
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v3
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '16'
-      - name: Install dependencies
-        run: npm ci
-      - name: Run tests
-        run: npm test
-      - name: Build Docker image
-        run: docker build -t myorg/dockertest:${{ github.sha }} .
-      # опционально: push to registry (требует настроенных secrets)
-      # - name: Login to DockerHub
-      #   run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
-      # - name: Push image
-      #   run: docker push myorg/dockertest:${{ github.sha }}
-
-
-Этот пример выполняет установку зависимостей, тесты и сборку образа. Для публикации образа добавьте шаги логина и push.
+1. Установить зависимости и запустить npm test
+2. Собрать Docker-образ
+3. (Опционально) Протестировать образ (запустить в контейнере и выполнить интеграционные проверки)
+4. Запушить образ в реестра (если тесты пройдены)
 
 ## Полезные команды
 
-- Просмотр образов:
+- Сборка: $ docker build -t dockertest:latest .
+- Запуск: $ docker run --rm -p 3000:3000 dockertest:latest
+- Логи: $ docker logs -f <container>
+- Тесты: $ npm test
+- Установка: $ npm install
 
+## Примечания
 
-docker images
-
-
-- Удаление образа:
-
-
-docker rmi <image-id-or-name>
-
-
-- Удаление остановленных контейнеров:
-
-
-docker container prune
-
-
-## Рекомендации
-
-- Используйте multistage Dockerfile для уменьшения размера финального образа.
-- В CI выполняйте `npm ci` вместо `npm install` для воспроизводимости.
-- Настройте workflow для сборки и пуша образов в приватный/публичный реестр при успешной сборке на main.
-
-## Контакты
-
-Если что-то не работает — откройте issue с описанием шага воспроизведения и логами.
+- Если ваш проект использует другой порт или дополнительные переменные окружения, адаптируйте команды соответствующим образом.
+- Следующий шаг: добавить конфигурацию CI (например, .github/workflows/ci.yml) для автоматизации сборки и тестирования.
