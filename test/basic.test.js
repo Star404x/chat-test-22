@@ -1,50 +1,33 @@
-const { registerUser, login, sendMessage, getMessagesFor, _internal } = require('../src/index');
+const { authenticate, sendMessage, getMessages, resetStore } = require('../src/index');
 
 beforeEach(() => {
-  _internal.clearAll();
+  resetStore();
 });
 
-describe('Authentication', () => {
-  test('register and login success', () => {
-    const ok = registerUser('alice', 'password123');
-    expect(ok).toBe(true);
-    const token = login('alice', 'password123');
-    expect(typeof token).toBe('string');
-    expect(token.length).toBeGreaterThan(0);
-  });
-
-  test('duplicate registration fails', () => {
-    expect(registerUser('bob', 'x')).toBe(true);
-    expect(registerUser('bob', 'x')).toBe(false);
-  });
-
-  test('invalid login returns null', () => {
-    registerUser('carol', 'pw');
-    expect(login('carol', 'wrong')).toBeNull();
-    expect(login('nonexistent', 'pw')).toBeNull();
-  });
+test('authenticate: valid credentials pass', () => {
+  expect(authenticate('alice', 'password123')).toBe(true);
 });
 
-describe('Messaging', () => {
-  test('send message between users', () => {
-    registerUser('alice', 'a');
-    registerUser('bob', 'b');
-    const tA = login('alice', 'a');
-    const tB = login('bob', 'b');
-    const msg = sendMessage(tA, 'bob', 'Hello Bob');
-    expect(msg).toHaveProperty('id');
-    expect(msg.from).toBe('alice');
-    expect(msg.to).toBe('bob');
-    expect(msg.text).toBe('Hello Bob');
+test('authenticate: invalid credentials fail', () => {
+  expect(authenticate('alice', 'badpass')).toBe(false);
+  expect(authenticate('unknown', 'x')).toBe(false);
+});
 
-    const bobMsgs = getMessagesFor('bob');
-    expect(bobMsgs.length).toBe(1);
-    expect(bobMsgs[0].text).toBe('Hello Bob');
-  });
+test('sendMessage and getMessages between two users', () => {
+  const m1 = sendMessage('alice', 'bob', 'Hello Bob');
+  const m2 = sendMessage('bob', 'alice', 'Hi Alice');
 
-  test('sending with invalid token throws', () => {
-    registerUser('alice', 'a');
-    registerUser('bob', 'b');
-    expect(() => sendMessage('badtoken', 'bob', 'x')).toThrow();
-  });
+  const chatId = 'alice:bob';
+  const msgs = getMessages(chatId);
+
+  expect(msgs.length).toBe(2);
+  expect(msgs[0].text).toBe('Hello Bob');
+  expect(msgs[1].text).toBe('Hi Alice');
+  expect(msgs).toEqual(expect.arrayContaining([expect.objectContaining({ text: 'Hello Bob' })]));
+});
+
+test('sendMessage validation rejects bad args', () => {
+  expect(() => sendMessage(null, 'bob', 'x')).toThrow();
+  expect(() => sendMessage('alice', null, 'x')).toThrow();
+  expect(() => sendMessage('alice', 'bob', null)).toThrow();
 });
