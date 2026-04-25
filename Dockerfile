@@ -1,18 +1,14 @@
 FROM node:18-alpine
 
-# Create app directory
-WORKDIR /usr/src/app
+WORKDIR /app
 
-# Install dependencies
-COPY package*.json ./
-RUN npm ci --only=production
+# Install production dependencies
+COPY package.json package-lock.json* ./
+RUN npm ci --only=production || npm install --only=production
 
-# Copy app source
+# Copy source
 COPY . .
 
-# Set environment and expose port
-ENV NODE_ENV=production
 EXPOSE 3000
 
-# Start the app (ensure your entry point is index.js or adjust accordingly)
-CMD ["node", "index.js"]
+CMD ["node", "src/index.js"]

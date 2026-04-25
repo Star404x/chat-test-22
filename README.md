@@ -1,96 +1,94 @@
-# exp-api-test
+# exp-api-test-2
 
-Minimal Express API with instructions for usage, testing and releasing.
+Minimal Express API with example requests and deployment notes.
 
-## Requirements
+## What is included
 
-- Node.js >= 14
-- npm
+- Minimal Express app (src/index.js)
+- Example endpoints: `/`, `/health`, `/items` (GET, POST)
+- Dockerfile for containerized deployment
+- package.json with basic scripts
 
-## Install
+## Quick start (local)
 
-1. Clone the repository
-2. Install dependencies:
+1. Install dependencies:
 
+   npm install
 
-npm install
+2. Run locally:
 
+   npm start
 
-## Run
+By default the server listens on port 3000. Override with `PORT` env var.
 
-Start the server locally:
+## Endpoints and example requests
 
+GET /health
 
-npm start
+curl:
 
+curl -s http://localhost:3000/health
 
-The server listens on PORT (default 3000).
+Response:
 
-Available endpoints:
-- GET /health -> { "status": "ok" }
-- GET /hello -> { "message": "Hello, world!" }
+{ "status": "ok" }
 
-## Development
+GET /items
 
-Run in dev mode with auto-reload (requires nodemon):
+curl -s http://localhost:3000/items
 
+Response example:
 
-npm run dev
+{ "items": [ { "id": 1, "name": "Sample Item" } ] }
 
+POST /items
 
-## Testing
+Create a new item (JSON body must include `name`):
 
-This project uses Jest and Supertest for endpoint testing. To run tests:
+curl -s -X POST http://localhost:3000/items \
+  -H "Content-Type: application/json" \
+  -d '{"name":"New item"}'
 
+Response (201):
 
-npm test
+{ "id": 2, "name": "New item" }
 
+Error if `name` missing (400):
 
-CI should run `npm ci` and then `npm test` to validate the API on every push/PR.
+{ "error": "name is required" }
 
-## Tagging a release
+## Deployment
 
-This repository is prepared to use npm version for simple release tagging. To create a new patch release and push the tag:
+### Docker
 
+Build image:
 
-npm run release
+  docker build -t exp-api-test-2:latest .
 
+Run container (maps port 3000):
 
-This script runs `npm version patch` which increments package.json version, creates a git commit and a tag, and then pushes the commit and tags to the remote. Adjust to `minor` or `major` as needed.
+  docker run -p 3000:3000 -e PORT=3000 exp-api-test-2:latest
 
-Manual alternative:
+### Heroku (example)
 
+1. Create a Heroku app:
 
-# bump version
-npm version patch
-# push commits and tags
-git push --follow-tags origin main
+   heroku create my-exp-api
 
+2. Push main branch:
 
-After tagging you can build/publish artifacts or Docker images referencing the new tag.
+   git push heroku main
 
-## Prepare deployment (example with Docker)
+Heroku will run `npm start` by default. Make sure `package.json` and `start` script are present.
 
-Create a Dockerfile (not included here) and build:
+### Environment variables
 
+- PORT — port to bind (default 3000)
+- NODE_ENV — environment (optional)
 
-# replace USERNAME and version/tag as appropriate
-docker build -t USERNAME/exp-api-test:v0.1.0 .
-docker push USERNAME/exp-api-test:v0.1.0
+## Next steps
 
+- Add automated tests (Jest / supertest)
+- Add CI pipeline to run tests and linting
+- Harden input validation and add persistence
 
-In production you can run the container exposing the port:
-
-
-docker run -e PORT=3000 -p 3000:3000 USERNAME/exp-api-test:v0.1.0
-
-
-## CI / CD notes
-
-Recommended next steps:
-- Add GitHub Actions workflow to run tests on PRs and pushes (.github/workflows/ci.yml)
-- Add a release workflow that builds/publishes Docker images on new tags
-
-## Next
-
-Add automated tests (Jest + Supertest) for endpoints and create CI workflow to run them and optionally publish Docker images on release tags.

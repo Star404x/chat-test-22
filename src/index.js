@@ -1,23 +1,38 @@
 const express = require('express');
 const app = express();
-
 app.use(express.json());
+
+const PORT = process.env.PORT || 3000;
+
+// Simple in-memory store for demonstration
+let items = [ { id: 1, name: 'Sample Item' } ];
+
+app.get('/', (req, res) => {
+  res.json({ message: 'exp-api-test-2 API', status: 'ok' });
+});
 
 app.get('/health', (req, res) => {
   res.json({ status: 'ok' });
 });
 
-app.get('/hello', (req, res) => {
-  res.json({ message: 'Hello, world!' });
+app.get('/items', (req, res) => {
+  res.json({ items });
 });
 
-// Export app for testing
-module.exports = app;
+app.post('/items', (req, res) => {
+  const { name } = req.body || {};
+  if (!name) {
+    return res.status(400).json({ error: 'name is required' });
+  }
+  const newItem = { id: items.length + 1, name };
+  items.push(newItem);
+  res.status(201).json(newItem);
+});
 
-// If run directly, start the server
 if (require.main === module) {
-  const port = process.env.PORT || 3000;
-  app.listen(port, () => {
-    console.log(`Server listening on ${port}`);
+  app.listen(PORT, () => {
+    console.log(`Server listening on port ${PORT}`);
   });
 }
+
+module.exports = app;
