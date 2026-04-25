@@ -1,14 +1,14 @@
 FROM node:18-alpine
 
+# Create app directory
 WORKDIR /app
 
-# Install production dependencies
-COPY package.json package-lock.json* ./
-RUN npm ci --only=production || npm install --only=production
+# Install app dependencies
+COPY package*.json ./
+RUN npm install --production
 
-# Copy source
+# Bundle app source
 COPY . .
 
 EXPOSE 3000
-
 CMD ["node", "src/index.js"]

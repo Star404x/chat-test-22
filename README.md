@@ -1,94 +1,46 @@
-# exp-api-test-2
+# express-api-test-3
 
-Minimal Express API with example requests and deployment notes.
+Minimal Express API intended for automated endpoint tests and CI integration.
 
-## What is included
+Prerequisites
+- Node.js 18+ (for local run)
+- npm
+- Docker (to run containerized)
 
-- Minimal Express app (src/index.js)
-- Example endpoints: `/`, `/health`, `/items` (GET, POST)
-- Dockerfile for containerized deployment
-- package.json with basic scripts
-
-## Quick start (local)
-
+Local usage
 1. Install dependencies:
 
    npm install
 
-2. Run locally:
+2. Start the app:
 
    npm start
 
-By default the server listens on port 3000. Override with `PORT` env var.
+   The server listens on port 3000 by default. To change the port:
 
-## Endpoints and example requests
+   PORT=4000 npm start
 
-GET /health
+3. Endpoints:
+- GET / -> { message: 'Hello from express-api-test-3' }
+- GET /health -> { status: 'ok' }
 
-curl:
+Example:
 
-curl -s http://localhost:3000/health
+   curl http://localhost:3000/
 
-Response:
+Docker
+1. Build the image:
 
-{ "status": "ok" }
+   docker build -t express-api-test-3 .
 
-GET /items
+2. Run the container (exposes port 3000):
 
-curl -s http://localhost:3000/items
+   docker run -p 3000:3000 --rm --name express-api-test-3 express-api-test-3
 
-Response example:
+3. Optional: change the port mapping:
 
-{ "items": [ { "id": 1, "name": "Sample Item" } ] }
+   docker run -p 8080:3000 --rm express-api-test-3
 
-POST /items
-
-Create a new item (JSON body must include `name`):
-
-curl -s -X POST http://localhost:3000/items \
-  -H "Content-Type: application/json" \
-  -d '{"name":"New item"}'
-
-Response (201):
-
-{ "id": 2, "name": "New item" }
-
-Error if `name` missing (400):
-
-{ "error": "name is required" }
-
-## Deployment
-
-### Docker
-
-Build image:
-
-  docker build -t exp-api-test-2:latest .
-
-Run container (maps port 3000):
-
-  docker run -p 3000:3000 -e PORT=3000 exp-api-test-2:latest
-
-### Heroku (example)
-
-1. Create a Heroku app:
-
-   heroku create my-exp-api
-
-2. Push main branch:
-
-   git push heroku main
-
-Heroku will run `npm start` by default. Make sure `package.json` and `start` script are present.
-
-### Environment variables
-
-- PORT — port to bind (default 3000)
-- NODE_ENV — environment (optional)
-
-## Next steps
-
-- Add automated tests (Jest / supertest)
-- Add CI pipeline to run tests and linting
-- Harden input validation and add persistence
-
+Notes
+- The app exports the Express `app` instance from src/index.js to make it easy to add automated tests.
+- Next steps: add automated tests (e.g., using Jest + Supertest) and CI workflow (e.g., GitHub Actions) to validate endpoints.
