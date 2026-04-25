@@ -2,15 +2,14 @@ FROM node:18-alpine
 
 WORKDIR /app
 
-# copy package.json first to leverage Docker layer caching
+# Copy package definition and install production dependencies
 COPY package.json ./
+RUN npm install --production --no-audit --no-fund
 
-# install only production deps (there are none now, but keep pattern)
-RUN npm install --production
-
-# copy the rest of the files
-COPY . .
+# Copy app source
+COPY src ./src
 
 EXPOSE 3000
+ENV NODE_ENV=production
 
-CMD ["npm", "start"]
+CMD ["node", "src/index.js"]

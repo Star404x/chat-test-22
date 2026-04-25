@@ -5,7 +5,8 @@
   "main": "src/index.js",
   "scripts": {
     "start": "node src/index.js",
-    "dev": "NODE_ENV=development node src/index.js"
+    "docker:build": "docker build -t minimal-project .",
+    "docker:run": "docker run -p 3000:3000 --rm minimal-project"
   },
   "author": "",
   "license": "MIT"
