@@ -1,19 +1,12 @@
-const express = require('express');
-const app = express();
+const http = require('http');
 
-app.get('/', (req, res) => {
-  res.json({ message: 'Hello from express-api-test-3' });
+const PORT = process.env.PORT || 3000;
+
+const server = http.createServer((req, res) => {
+  res.writeHead(200, { 'Content-Type': 'application/json' });
+  res.end(JSON.stringify({ message: 'Minimal Project', uptime: process.uptime() }));
 });
 
-app.get('/health', (req, res) => {
-  res.json({ status: 'ok' });
+server.listen(PORT, () => {
+  console.log(`Server listening on port ${PORT}`);
 });
-
-const port = process.env.PORT || 3000;
-if (require.main === module) {
-  app.listen(port, () => {
-    console.log(`Server listening on port ${port}`);
-  });
-}
-
-module.exports = app;

@@ -1,14 +1,16 @@
 FROM node:18-alpine
 
-# Create app directory
 WORKDIR /app
 
-# Install app dependencies
-COPY package*.json ./
+# copy package.json first to leverage Docker layer caching
+COPY package.json ./
+
+# install only production deps (there are none now, but keep pattern)
 RUN npm install --production
 
-# Bundle app source
+# copy the rest of the files
 COPY . .
 
 EXPOSE 3000
-CMD ["node", "src/index.js"]
+
+CMD ["npm", "start"]

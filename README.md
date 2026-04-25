@@ -1,46 +1,50 @@
-# express-api-test-3
+# Минимальный проект
 
-Minimal Express API intended for automated endpoint tests and CI integration.
+Простейшее Node.js приложение и инструкции по запуску локально и в Docker.
 
-Prerequisites
-- Node.js 18+ (for local run)
-- npm
-- Docker (to run containerized)
+Особенности:
+- Минимальный HTTP-сервер (порт по умолчанию 3000)
+- Dockerfile для контейнеризации
 
-Local usage
-1. Install dependencies:
+Предварительные требования:
+- Node.js 14+ / npm
+- Docker (если хотите запускать в контейнере)
+
+Локальный запуск:
+1. Установите зависимости:
 
    npm install
 
-2. Start the app:
+2. Запустите приложение:
 
    npm start
 
-   The server listens on port 3000 by default. To change the port:
+3. Откройте в браузере или выполните curl:
 
-   PORT=4000 npm start
+   http://localhost:3000
 
-3. Endpoints:
-- GET / -> { message: 'Hello from express-api-test-3' }
-- GET /health -> { status: 'ok' }
+Запуск в режиме разработки (среда DEVELOPMENT):
 
-Example:
-
-   curl http://localhost:3000/
+   npm run dev
 
 Docker
-1. Build the image:
 
-   docker build -t express-api-test-3 .
+Сборка образа:
 
-2. Run the container (exposes port 3000):
+   docker build -t minimal-project .
 
-   docker run -p 3000:3000 --rm --name express-api-test-3 express-api-test-3
+Запуск контейнера (порт 3000):
 
-3. Optional: change the port mapping:
+   docker run -p 3000:3000 minimal-project
 
-   docker run -p 8080:3000 --rm express-api-test-3
+Переопределение порта через переменную окружения:
 
-Notes
-- The app exports the Express `app` instance from src/index.js to make it easy to add automated tests.
-- Next steps: add automated tests (e.g., using Jest + Supertest) and CI workflow (e.g., GitHub Actions) to validate endpoints.
+   docker run -e PORT=4000 -p 4000:4000 minimal-project
+
+Описание ответа:
+GET / -> JSON { "message": "Minimal Project", "uptime": <seconds> }
+
+Дальнейшие шаги:
+- Добавить тесты и CI
+- Развернуть простую маршрутизацию/health endpoint
+
