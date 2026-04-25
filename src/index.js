@@ -3,11 +3,15 @@ const http = require('http');
 const PORT = process.env.PORT || 3000;
 
 const server = http.createServer((req, res) => {
+  if (req.url === '/health') {
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    return res.end(JSON.stringify({ status: 'ok' }));
+  }
+
   res.writeHead(200, { 'Content-Type': 'application/json' });
-  res.end(JSON.stringify({ message: 'Hello from Minimal Project', path: req.url }));
+  res.end(JSON.stringify({ message: 'Minimal Project - running', port: PORT }));
 });
 
 server.listen(PORT, () => {
-  // eslint-disable-next-line no-console
   console.log(`Server listening on port ${PORT}`);
 });
