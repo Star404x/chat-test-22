@@ -1,15 +1,18 @@
 FROM node:18-alpine
 
+# Create app directory
 WORKDIR /app
 
-# Copy package definition and install production dependencies
+# Copy package files first (better cache usage)
 COPY package.json ./
-RUN npm install --production --no-audit --no-fund
 
-# Copy app source
-COPY src ./src
+# Install dependencies (none by default)
+RUN npm install --production --no-audit --no-fund || true
 
-EXPOSE 3000
+# Copy application source
+COPY . ./
+
 ENV NODE_ENV=production
+EXPOSE 3000
 
 CMD ["node", "src/index.js"]

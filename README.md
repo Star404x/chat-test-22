@@ -1,67 +1,51 @@
-# Минимальный проект
+# Minimal Project
 
-Краткое описание
+A minimal Node.js application scaffold with Docker support.
 
-This repository содержит минимальную структуру Node.js-приложения с простым сервером в src/index.js и Dockerfile для контейнеризации.
+Usage
+-----
 
-Предназначение
+Local
+-----
 
-- Быстрый старт разработки
-- Возможность запуска локально и в контейнере
-
-Требования
-
-- Node.js 14+ (или версия, указанная в package.json)
-- npm или yarn
-- Docker (для запуска в контейнере)
-
-Запуск локально
-
-1. Установите зависимости:
+1. Install (no dependencies required for the basic example, but run to be safe):
 
    npm install
 
-2. Запустите приложение:
+2. Start the app:
 
    npm start
 
-3. По умолчанию сервер слушает порт 3000 (если в src/index.js используется process.env.PORT, задайте PORT при запуске):
+3. Open http://localhost:3000
 
-   PORT=4000 npm start
+Docker
+------
 
-Запуск в Docker
-
-Dockerfile уже добавлен в репозиторий. Примеры команд:
-
-1. Сборка образа:
+1. Build the image:
 
    docker build -t minimal-project .
 
-2. Запуск контейнера (проброс порта 3000):
+2. Run the container (map port 3000):
 
-   docker run --rm -p 3000:3000 minimal-project
+   docker run -p 3000:3000 --name minimal-project minimal-project
 
-3. Если нужно задать переменную PORT внутри контейнера:
+3. Optionally override the port:
 
-   docker run --rm -p 4000:4000 -e PORT=4000 minimal-project
+   docker run -p 4000:4000 -e PORT=4000 minimal-project
 
-Примечание: скорректируйте номера портов согласно конфигурации в src/index.js.
+What you'll see
+----------------
 
-Полезные команды npm
+The app responds with a small JSON payload, e.g.:
 
-- npm start — запустить приложение
-- npm run dev — (если добавлен скрипт для разработки, например с nodemon)
+{
+  "message": "Hello from Minimal Project",
+  "path": "/"
+}
 
-Docker оптимизация
+Next steps
+----------
 
-Для ускорения сборки рекомендуется использовать .dockerignore (в проект добавлен) и кеширование слоёв в Dockerfile.
-
-Отладка и логирование
-
-- При проблемах смотрите вывод контейнера: docker logs <container_id>
-- Локально проверяйте, что PORT не занят
-
-Дальнейшие шаги
-
-- Добавить тесты и линтер
-- Настроить CI/CD для автоматической сборки Docker-образа и тестирования
+- Implement application endpoints and business logic in src/
+- Add tests and linting
+- Add CI configuration
