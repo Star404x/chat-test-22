@@ -1,16 +1,22 @@
 {
   "name": "chat-test-40",
   "version": "0.1.0",
-  "description": "Test chat application v40 - basic messaging and auth for development",
+  "description": "Test chat application v40 for messaging, auth and local dev deployment",
   "main": "src/index.js",
   "scripts": {
     "start": "node src/index.js",
-    "test": "jest --runInBand",
-    "prepare-branch": "node scripts/prepare-dev-auto.js"
+    "dev": "node src/index.js",
+    "test": "jest --coverage",
+    "prepare-branch": "git checkout -B dev/auto || git checkout dev/auto"
   },
+  "keywords": [
+    "chat",
+    "test",
+    "v40"
+  ],
+  "author": "",
+  "license": "MIT",
   "devDependencies": {
     "jest": "^29.0.0"
-  },
-  "keywords": ["chat","test","v40"],
-  "license": "MIT"
+  }
 }
