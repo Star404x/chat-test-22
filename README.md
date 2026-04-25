@@ -1,51 +1,40 @@
-# Minimal Project
+# chat test 40
 
-A minimal Node.js application scaffold with Docker support.
+Минимальная тестовая реализация чат-приложения (v40) для проверки обмена сообщениями и авторизации в среде разработки.
 
-Usage
------
+Текущее содержимое:
+- package.json
+- src/index.js (in-memory функции регистрации, входа и отправки сообщений)
+- test/basic.test.js (Jest тесты)
+- .gitignore
 
-Local
------
+Требования
+- Node.js >= 14
 
-1. Install (no dependencies required for the basic example, but run to be safe):
+Установка
+
+1. Установите зависимости:
 
    npm install
 
-2. Start the app:
+Запуск
 
-   npm start
+- Локально модуль можно запустить как скрипт (не настоящий сервер):
 
-3. Open http://localhost:3000
+  npm start
 
-Docker
-------
+Тесты
 
-1. Build the image:
+- Запустить все тесты:
 
-   docker build -t minimal-project .
+  npm test
 
-2. Run the container (map port 3000):
+Подготовка ветки dev/auto
 
-   docker run -p 3000:3000 --name minimal-project minimal-project
+- Скрипт создаёт локальную ветку dev/auto (если ещё не создана):
 
-3. Optionally override the port:
+  npm run create-dev-branch
 
-   docker run -p 4000:4000 -e PORT=4000 minimal-project
+Дальше
 
-What you'll see
-----------------
-
-The app responds with a small JSON payload, e.g.:
-
-{
-  "message": "Hello from Minimal Project",
-  "path": "/"
-}
-
-Next steps
-----------
-
-- Implement application endpoints and business logic in src/
-- Add tests and linting
-- Add CI configuration
+- На следующем шаге можно добавить CI (GitHub Actions) для автоматического запуска тестов при push в ветку dev/auto и реализовать реальный сервер/эндпоинты.

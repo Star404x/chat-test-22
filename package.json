@@ -1,15 +1,17 @@
 {
-  "name": "minimal-project",
+  "name": "chat-test-40",
   "version": "0.1.0",
-  "description": "Minimal Node.js project skeleton",
+  "description": "Test chat application v40 - basic in-memory auth and messaging for development",
   "main": "src/index.js",
   "scripts": {
     "start": "node src/index.js",
-    "dev": "nodemon src/index.js",
-    "lint": "echo \"No linter configured\""
+    "test": "jest --runInBand",
+    "create-dev-branch": "git branch dev/auto || true"
   },
-  "engines": {
-    "node": ">=14"
-  },
-  "license": "MIT"
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "jest": "^29.6.1"
+  }
 }
