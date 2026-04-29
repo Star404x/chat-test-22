@@ -1,52 +1,58 @@
-# Simple Node.js Chat Bot
+# Простой чат-бот на Node.js
 
-This repository contains a minimal local chat bot implemented in Node.js. The bot responds to simple commands typed in the terminal.
+Этот репозиторий содержит минимальный чат-бот на Node.js, который отвечает на команды и запускается локально.
 
-Prerequisites
+## Предпосылки
 
-- Node.js 14+ installed
+- Node.js 14+ и npm
 
-Installation
+## Установка
 
-1. Install dependencies:
+1. Склонируйте репозиторий и перейдите в папку проекта:
 
-bash
-npm install
+   git clone <repo-url>
+   cd <repo-folder>
 
+2. Установите зависимости:
 
-Configuration (token)
+   npm install
 
-The bot can optionally use an external token (for future integrations). To set the token, create a `.env` file or set an environment variable:
+## Настройка токена
 
-- .env file (create .env in project root):
+Бот использует токен (например, токен от мессенджера или API). Токен не должен храниться в репозитории.
 
+1. Создайте файл `.env` в корне проекта или экспортируйте переменную окружения в вашей системе.
 
-TOKEN=your_api_token_here
+Пример `.env`:
 
+   BOT_TOKEN=ваш_секретный_токен
 
-- Or export an environment variable (Linux/macOS):
+> Важно: не коммитьте `.env` в репозиторий.
 
-bash
-export TOKEN=your_api_token_here
+## Запуск
 
+- Запуск в продакшен-режиме:
 
-Running
+  npm start
 
-Start the bot:
+- Если у вас установлен nodemon и вы хотите запуск в режиме разработки (reload при изменениях):
 
-bash
-npm start
+  npm run dev
 
+(Если нет nodemon — установите глобально или добавьте в devDependencies.)
 
-You will see a prompt `>` where you can type commands. Available commands:
+По умолчанию приложение запускает `src/index.js`, который должен читать переменную окружения `BOT_TOKEN` и запускать логику бота.
 
-- `help` — list commands
-- `ping` — bot replies `pong`
-- `echo <text>` — bot echoes the text
-- `token` — shows whether a token is set
-- `exit` — quit the bot
+## Пример работы
 
-Notes
+После запуска бот должен подключиться к нужному API и начать отвечать на команды. Убедитесь, что переменная `BOT_TOKEN` задана корректно.
 
-- If TOKEN is not set, the bot still runs locally and responds to commands, but any external integrations depending on a token will not function.
-- To extend the bot, edit `src/index.js` and add command handlers.
+## Отладка
+
+- Проверьте, что `BOT_TOKEN` действительно доступен в окружении процесса.
+- Проверьте логи в консоли при запуске.
+
+## Безопасность
+
+- Никогда не публикуйте ваш токен в открытом доступе.
+- Используйте `.env` или менеджер секретов в production.
