@@ -1,57 +1,41 @@
-'use strict';
+const dotenv = require('dotenv');
+dotenv.config();
 
-require('dotenv').config();
-const readline = require('readline');
+const token = process.env.BOT_TOKEN;
 
-const TOKEN = process.env.BOT_TOKEN;
-
-function maskToken(t) {
-  if (!t) return '';
-  if (t.length <= 8) return '****';
-  return t.slice(0, 4) + '...' + t.slice(-4);
-}
-
-if (!TOKEN) {
-  console.error('Ошибка: переменная окружения BOT_TOKEN не задана. См. README для инструкций.');
+if (!token) {
+  console.error('Missing BOT_TOKEN. Set it in environment or in a .env file. See README.md for details.');
   process.exit(1);
 }
 
-console.log('Бот запущен (скелет). Токен:', maskToken(TOKEN));
-console.log('Введите /help для списка команд.');
+console.log('BOT_TOKEN loaded. Bot is starting...');
 
-const rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout,
-  prompt: '> '
-});
+// TODO: Replace this placeholder with actual platform integration (Telegram, Discord, etc.)
 
-rl.prompt();
-
-rl.on('line', (line) => {
-  const input = line.trim();
-  if (!input) {
-    rl.prompt();
-    return;
-  }
-
-  if (input === '/help') {
-    console.log('Доступные команды:');
-    console.log('  /help        - Показать это сообщение');
-    console.log('  /ping        - Проверка отклика');
-    console.log('  /echo <txt>  - Повторить текст');
-    console.log('  /exit        - Выход');
-  } else if (input === '/ping') {
-    console.log('Pong!');
-  } else if (input.startsWith('/echo ')) {
-    console.log(input.slice(6));
-  } else if (input === '/exit') {
-    console.log('Завершение работы...');
-    rl.close();
+function handleMessage(message) {
+  if (!message) return;
+  const text = message.trim().toLowerCase();
+  if (text === '/ping') {
+    return 'Pong!';
+  } else if (text === '/help') {
+    return 'Available commands: /ping, /help';
   } else {
-    console.log('Неизвестная команда. Введите /help.');
+    return "I don't understand that command. Type /help.";
   }
+}
 
-  rl.prompt();
-}).on('close', () => {
-  process.exit(0);
-});
+// CLI demo for quick local testing
+if (require.main === module) {
+  const readline = require('readline').createInterface({
+    input: process.stdin,
+    output: process.stdout,
+    terminal: false,
+  });
+  console.log('Chat-bot CLI demo. Type a command (Ctrl+C to exit).');
+  readline.on('line', line => {
+    const reply = handleMessage(line);
+    if (reply) console.log('Bot:', reply);
+  });
+}
+
+module.exports = { handleMessage };

@@ -1,19 +1,26 @@
 {
   "name": "simple-chat-bot",
   "version": "0.1.0",
-  "description": "Простой чат-бот на Node.js (скелет)",
+  "description": "A simple chat-bot skeleton on Node.js",
   "main": "src/index.js",
   "scripts": {
-    "start": "node src/index.js"
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js"
   },
   "keywords": [
-    "chat-bot",
-    "nodejs",
-    "bot"
+    "bot",
+    "chatbot",
+    "nodejs"
   ],
   "author": "",
   "license": "MIT",
   "dependencies": {
     "dotenv": "^16.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.0"
+  },
+  "engines": {
+    "node": ">=14"
   }
 }
