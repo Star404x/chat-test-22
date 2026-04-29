@@ -1,17 +1,11 @@
 {
   "name": "simple-node-bot",
-  "version": "0.1.0",
-  "description": "A simple Node.js chat bot (console-based stub)",
+  "version": "1.0.0",
+  "description": "Minimal chat bot running locally",
   "main": "src/index.js",
   "scripts": {
     "start": "node src/index.js"
   },
-  "keywords": [
-    "bot",
-    "nodejs"
-  ],
-  "author": "",
-  "license": "MIT",
   "dependencies": {
     "dotenv": "^16.0.0"
   }

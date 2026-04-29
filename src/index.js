@@ -1,15 +1,12 @@
 const dotenv = require('dotenv');
+const readline = require('readline');
+
 dotenv.config();
 
-const BOT_TOKEN = process.env.BOT_TOKEN || null;
-
-if (!BOT_TOKEN) {
-  console.warn('Warning: BOT_TOKEN is not set. Running in demo mode.');
-} else {
-  console.log('BOT_TOKEN detected. Starting bot...');
+const TOKEN = process.env.TOKEN || process.env.BOT_TOKEN;
+if (!TOKEN) {
+  console.warn('Warning: TOKEN is not set. The bot will run locally without external API access.');
 }
-
-const readline = require('readline');
 
 const rl = readline.createInterface({
   input: process.stdin,
@@ -17,9 +14,8 @@ const rl = readline.createInterface({
   prompt: '> '
 });
 
-console.log('Simple Node Bot');
-console.log('Type /help for commands. Input is treated as incoming messages.');
-
+console.log('Simple Node.js Chat Bot');
+console.log('Type "help" for available commands.');
 rl.prompt();
 
 rl.on('line', (line) => {
@@ -29,29 +25,29 @@ rl.on('line', (line) => {
     return;
   }
 
-  if (input === '/help') {
-    console.log('Commands:');
-    console.log('  /help         Show this help');
-    console.log('  /echo <text>  Echo back the text');
-    console.log('  /exit         Quit');
-  } else if (input.startsWith('/echo ')) {
-    const text = input.slice(6);
-    console.log('Echo:', text);
-  } else if (input === '/exit') {
-    console.log('Goodbye!');
-    rl.close();
-  } else {
-    console.log('Bot reply:', defaultReply(input));
+  const [cmd, ...args] = input.split(' ');
+  switch (cmd.toLowerCase()) {
+    case 'help':
+      console.log('Available commands: help, ping, echo <text>, token, exit');
+      break;
+    case 'ping':
+      console.log('pong');
+      break;
+    case 'echo':
+      console.log(args.join(' '));
+      break;
+    case 'token':
+      console.log(TOKEN ? 'Token is set.' : 'Token is not set.');
+      break;
+    case 'exit':
+      rl.close();
+      break;
+    default:
+      console.log('Unknown command. Type "help" for commands.');
   }
 
   rl.prompt();
 }).on('close', () => {
+  console.log('Goodbye!');
   process.exit(0);
 });
-
-function defaultReply(msg) {
-  const lower = msg.toLowerCase();
-  if (lower.includes('hello') || lower.includes('hi')) return 'Hello! How can I help?';
-  if (lower.includes('time')) return `Current time: ${new Date().toLocaleString()}`;
-  return `You said: "${msg}"`;
-}

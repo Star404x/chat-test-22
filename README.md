@@ -1,70 +1,52 @@
-# Simple Node Bot
+# Simple Node.js Chat Bot
 
-Небольшой демонстрационный чат-бот на Node.js. Этот репозиторий содержит минимальную заготовку бота и инструкцию по установке, запуску и настройке окружения.
+This repository contains a minimal local chat bot implemented in Node.js. The bot responds to simple commands typed in the terminal.
 
-## Требования
+Prerequisites
 
-- Node.js 14+ (рекомендуется актуальная LTS)
-- npm
+- Node.js 14+ installed
 
-## Установка
+Installation
 
-1. Клонируйте репозиторий или скачайте архив.
-2. Установите зависимости:
+1. Install dependencies:
 
 bash
 npm install
 
 
-## Настройка окружения
+Configuration (token)
 
-Бот использует переменные окружения для конфиденциальных значений (например, токенов). Создайте файл `.env` в корне проекта и добавьте туда необходимые переменные.
+The bot can optionally use an external token (for future integrations). To set the token, create a `.env` file or set an environment variable:
 
-Пример `.env`:
-
-
-BOT_TOKEN=your-bot-token-here
-NODE_ENV=development
+- .env file (create .env in project root):
 
 
-Файл `.env` добавлен в `.gitignore`, чтобы случайно не закоммитить секреты.
+TOKEN=your_api_token_here
 
-> В примере текущая заготовка использует `BOT_TOKEN` только для демонстрации — реальная интеграция с платформой (Telegram, Discord и т.д.) нужно добавить отдельно.
 
-## Запуск
+- Or export an environment variable (Linux/macOS):
 
-Запустить бота можно командой:
+bash
+export TOKEN=your_api_token_here
+
+
+Running
+
+Start the bot:
 
 bash
 npm start
 
 
-При запуске откроется простой консольный интерфейс для тестирования. Введите сообщения в консоли — бот будет отвечать простыми шаблонными ответами и поддерживает несколько команд.
+You will see a prompt `>` where you can type commands. Available commands:
 
-## Доступные команды (консоль)
+- `help` — list commands
+- `ping` — bot replies `pong`
+- `echo <text>` — bot echoes the text
+- `token` — shows whether a token is set
+- `exit` — quit the bot
 
-- `/help` — показать помощь
-- `/echo <text>` — вернуть текст обратно
-- `/exit` — завершить работу
+Notes
 
-Примеры взаимодействия:
-
-> Ввод: Hello
-
-> Ответ: Hello! How can I help?
-
-> Ввод: /echo test
-
-> Ответ: Echo: test
-
-## Развитие
-
-Дальнейшие шаги:
-
-- Интеграция с выбранной платформой (Telegram, Discord, Slack и т.д.)
-- Добавление модульных обработчиков команд и сообщений
-- Настройка логирования и тестов
-
-## Лицензия
-
-MIT
+- If TOKEN is not set, the bot still runs locally and responds to commands, but any external integrations depending on a token will not function.
+- To extend the bot, edit `src/index.js` and add command handlers.
