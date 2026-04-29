@@ -1,22 +1,13 @@
 {
-  "name": "chat-test-40",
+  "name": "simple-node-bot",
   "version": "0.1.0",
-  "description": "Test chat application v40 for messaging, auth and local dev deployment",
+  "private": true,
   "main": "src/index.js",
   "scripts": {
-    "start": "node src/index.js",
-    "dev": "node src/index.js",
-    "test": "jest --coverage",
-    "prepare-branch": "git checkout -B dev/auto || git checkout dev/auto"
+    "start": "node src/index.js"
   },
-  "keywords": [
-    "chat",
-    "test",
-    "v40"
-  ],
-  "author": "",
-  "license": "MIT",
-  "devDependencies": {
-    "jest": "^29.0.0"
-  }
+  "engines": {
+    "node": ">=14"
+  },
+  "license": "MIT"
 }
