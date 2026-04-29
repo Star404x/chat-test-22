@@ -1,78 +1,70 @@
-# Simple Chat Bot (Node.js)
+# Simple Node Bot
 
-This repository contains a simple Node.js chat-bot skeleton. This README explains how to install dependencies, configure the bot token, and run the bot locally.
+Небольшой демонстрационный чат-бот на Node.js. Этот репозиторий содержит минимальную заготовку бота и инструкцию по установке, запуску и настройке окружения.
 
-## Prerequisites
+## Требования
 
-- Node.js v14+ installed
-- npm (comes with Node.js)
+- Node.js 14+ (рекомендуется актуальная LTS)
+- npm
 
-## Installation
+## Установка
 
-1. Install dependencies:
+1. Клонируйте репозиторий или скачайте архив.
+2. Установите зависимости:
 
 bash
 npm install
 
 
-## Configuration (BOT token)
+## Настройка окружения
 
-The bot requires a token (BOT_TOKEN) to connect to the messaging platform you choose (Telegram, Discord, etc.). Configure the token in one of two ways:
+Бот использует переменные окружения для конфиденциальных значений (например, токенов). Создайте файл `.env` в корне проекта и добавьте туда необходимые переменные.
 
-1. Create a `.env` file in the project root with the following content:
-
-
-BOT_TOKEN=your_token_here
+Пример `.env`:
 
 
-2. Or set an environment variable directly in your shell:
-
-- macOS / Linux (bash/zsh):
-
-bash
-export BOT_TOKEN=your_token_here
+BOT_TOKEN=your-bot-token-here
+NODE_ENV=development
 
 
-- Windows (PowerShell):
+Файл `.env` добавлен в `.gitignore`, чтобы случайно не закоммитить секреты.
 
-powershell
-$env:BOT_TOKEN="your_token_here"
+> В примере текущая заготовка использует `BOT_TOKEN` только для демонстрации — реальная интеграция с платформой (Telegram, Discord и т.д.) нужно добавить отдельно.
 
+## Запуск
 
-Note: Never commit your real token to version control. Add `.env` to `.gitignore` (already included).
-
-## Running the bot
-
-Start the bot with:
+Запустить бота можно командой:
 
 bash
 npm start
 
 
-For development with auto-restart (requires nodemon):
+При запуске откроется простой консольный интерфейс для тестирования. Введите сообщения в консоли — бот будет отвечать простыми шаблонными ответами и поддерживает несколько команд.
 
-bash
-npm run dev
+## Доступные команды (консоль)
 
+- `/help` — показать помощь
+- `/echo <text>` — вернуть текст обратно
+- `/exit` — завершить работу
 
-## What the repository provides
+Примеры взаимодействия:
 
-- `src/index.js` — minimal entry point that loads BOT_TOKEN, contains a placeholder command handler (`/ping`, `/help`) and a small CLI demo for quick local testing.
-- `package.json` — scripts and dependencies (dotenv for loading `.env`).
-- `.gitignore` — ignores `node_modules` and `.env`.
+> Ввод: Hello
 
-## Example .env
+> Ответ: Hello! How can I help?
 
+> Ввод: /echo test
 
-BOT_TOKEN=abc123-your-token
+> Ответ: Echo: test
 
+## Развитие
 
-## Next steps
+Дальнейшие шаги:
 
-Implement integration with your chosen platform (Telegram, Discord, etc.) inside `src/index.js` or split into modules. Use `process.env.BOT_TOKEN` to authenticate.
+- Интеграция с выбранной платформой (Telegram, Discord, Slack и т.д.)
+- Добавление модульных обработчиков команд и сообщений
+- Настройка логирования и тестов
 
-## Troubleshooting
+## Лицензия
 
-- "Missing BOT_TOKEN" error: Ensure `.env` exists or the `BOT_TOKEN` env variable is set before running.
-
-If you need help wiring up a specific platform (Telegram/Discord), follow the platform's official docs for obtaining tokens and API usage.
+MIT

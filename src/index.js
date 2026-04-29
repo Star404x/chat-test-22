@@ -1,41 +1,57 @@
 const dotenv = require('dotenv');
 dotenv.config();
 
-const token = process.env.BOT_TOKEN;
+const BOT_TOKEN = process.env.BOT_TOKEN || null;
 
-if (!token) {
-  console.error('Missing BOT_TOKEN. Set it in environment or in a .env file. See README.md for details.');
-  process.exit(1);
+if (!BOT_TOKEN) {
+  console.warn('Warning: BOT_TOKEN is not set. Running in demo mode.');
+} else {
+  console.log('BOT_TOKEN detected. Starting bot...');
 }
 
-console.log('BOT_TOKEN loaded. Bot is starting...');
+const readline = require('readline');
 
-// TODO: Replace this placeholder with actual platform integration (Telegram, Discord, etc.)
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout,
+  prompt: '> '
+});
 
-function handleMessage(message) {
-  if (!message) return;
-  const text = message.trim().toLowerCase();
-  if (text === '/ping') {
-    return 'Pong!';
-  } else if (text === '/help') {
-    return 'Available commands: /ping, /help';
-  } else {
-    return "I don't understand that command. Type /help.";
+console.log('Simple Node Bot');
+console.log('Type /help for commands. Input is treated as incoming messages.');
+
+rl.prompt();
+
+rl.on('line', (line) => {
+  const input = line.trim();
+  if (!input) {
+    rl.prompt();
+    return;
   }
-}
 
-// CLI demo for quick local testing
-if (require.main === module) {
-  const readline = require('readline').createInterface({
-    input: process.stdin,
-    output: process.stdout,
-    terminal: false,
-  });
-  console.log('Chat-bot CLI demo. Type a command (Ctrl+C to exit).');
-  readline.on('line', line => {
-    const reply = handleMessage(line);
-    if (reply) console.log('Bot:', reply);
-  });
-}
+  if (input === '/help') {
+    console.log('Commands:');
+    console.log('  /help         Show this help');
+    console.log('  /echo <text>  Echo back the text');
+    console.log('  /exit         Quit');
+  } else if (input.startsWith('/echo ')) {
+    const text = input.slice(6);
+    console.log('Echo:', text);
+  } else if (input === '/exit') {
+    console.log('Goodbye!');
+    rl.close();
+  } else {
+    console.log('Bot reply:', defaultReply(input));
+  }
 
-module.exports = { handleMessage };
+  rl.prompt();
+}).on('close', () => {
+  process.exit(0);
+});
+
+function defaultReply(msg) {
+  const lower = msg.toLowerCase();
+  if (lower.includes('hello') || lower.includes('hi')) return 'Hello! How can I help?';
+  if (lower.includes('time')) return `Current time: ${new Date().toLocaleString()}`;
+  return `You said: "${msg}"`;
+}

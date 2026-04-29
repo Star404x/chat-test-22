@@ -1,26 +1,18 @@
 {
-  "name": "simple-chat-bot",
+  "name": "simple-node-bot",
   "version": "0.1.0",
-  "description": "A simple chat-bot skeleton on Node.js",
+  "description": "A simple Node.js chat bot (console-based stub)",
   "main": "src/index.js",
   "scripts": {
-    "start": "node src/index.js",
-    "dev": "nodemon src/index.js"
+    "start": "node src/index.js"
   },
   "keywords": [
     "bot",
-    "chatbot",
     "nodejs"
   ],
   "author": "",
   "license": "MIT",
   "dependencies": {
     "dotenv": "^16.0.0"
-  },
-  "devDependencies": {
-    "nodemon": "^2.0.0"
-  },
-  "engines": {
-    "node": ">=14"
   }
 }
