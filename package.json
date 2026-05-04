@@ -1,16 +1,16 @@
 {
-  "name": "portfolio2",
-  "version": "0.1.0",
-  "private": true,
-  "homepage": "https://<GITHUB_USERNAME>.github.io/<REPO_NAME>",
+  "name": "mini-portfolio-site",
+  "version": "1.0.0",
+  "description": "Responsive one-page portfolio site",
+  "main": "src/index.js",
   "scripts": {
-    "start": "live-server src --port=3000 --open=./index.html",
-    "deploy:gh": "gh-pages -d src",
-    "deploy:netlify": "netlify deploy --dir=src --prod"
+    "start": "node src/index.js",
+    "build": "echo \"No build step: place static files in public/ or add a build step\"",
+    "deploy:gh": "npm run build && npx gh-pages -d public"
   },
-  "devDependencies": {
-    "gh-pages": "^4.0.0",
-    "live-server": "^1.2.1",
-    "netlify-cli": "^10.0.0"
-  }
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "devDependencies": {},
+  "license": "MIT"
 }

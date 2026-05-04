@@ -1,32 +1,16 @@
-// Простой скрипт для рендеринга списка проектов
-document.addEventListener('DOMContentLoaded', function () {
-  var projects = [
-    {
-      title: 'Project One',
-      description: 'Короткое описание проекта №1',
-      link: '#'
-    },
-    {
-      title: 'Project Two',
-      description: 'Короткое описание проекта №2',
-      link: '#'
-    },
-    {
-      title: 'Project Three',
-      description: 'Короткое описание проекта №3',
-      link: '#'
-    }
-  ];
+const express = require('express');
+const path = require('path');
+const app = express();
+const PORT = process.env.PORT || 3000;
 
-  var list = document.getElementById('projects-list');
-  projects.forEach(function (p) {
-    var el = document.createElement('div');
-    el.className = 'card';
-    el.innerHTML = '<h3>' + p.title + '</h3>' +
-      '<p>' + p.description + '</p>' +
-      '<p><a href="' + p.link + '">Подробнее</a></p>';
-    list.appendChild(el);
-  });
+// Serve static files from /public
+app.use(express.static(path.join(__dirname, '..', 'public')));
 
-  document.getElementById('year').textContent = new Date().getFullYear();
+// Fallback to index.html for SPA routing
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'public', 'index.html'));
+});
+
+app.listen(PORT, () => {
+  console.log(`Mini Portfolio server running on port ${PORT}`);
 });

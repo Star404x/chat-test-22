@@ -1,77 +1,71 @@
-# mini site portfolio2
+# Mini Portfolio Site
 
-Краткое описание
+This repository contains a responsive one-page portfolio project. At this stage there is a minimal Node.js static server and instructions for running and deploying the site.
 
-Небольшой адаптивный персональный портфолио-сайт (статический), готовый для деплоя на GitHub Pages или Netlify.
+Project structure (expected):
 
-Установка и локальная отладка
+- public/             # static site files (index.html, css/, js/, images/)
+- src/index.js        # local Node static server
+- package.json
 
-1. Клонируйте репозиторий и перейдите в папку проекта:
+If you don't yet have your site files, create public/index.html and other assets first.
 
-   git clone <repo-url>
-   cd <repo-folder>
+Local development
+-----------------
 
-2. Установите зависимости:
+1. Install dependencies:
 
    npm install
 
-3. Запустить локальный сервер разработки (live-server):
+2. Place your site files into the public/ folder. The server serves files from public/ and falls back to public/index.html for SPA routing.
+
+3. Start the local server:
 
    npm start
 
-   Откроется http://localhost:3000/index.html
+4. Open http://localhost:3000 in your browser.
 
-Структура
+Deploy options
+--------------
 
-- src/ - статические файлы сайта (index.html, index.js и т.д.)
-- package.json - npm-скрипты для локального старта и деплоя
+You can deploy this site using several hosts. Choose the one that fits your workflow.
 
-Деплой на GitHub Pages
+Option A — Vercel (recommended for Node or static):
 
-1. В package.json замените поле "homepage" на реальный URL вашего GitHub Pages (например: https://your-username.github.io/your-repo).
+- If you want to deploy the Node server directly, Vercel will use "npm start" automatically.
+- From the Vercel dashboard, import the Git repository. No additional config is necessary for this simple server.
+- Or use the CLI:
 
-2. Убедитесь, что репозиторий закоммичен и запушен в GitHub.
+  npm i -g vercel
+  vercel
 
-3. Установите зависимости (если ещё не сделали):
+Option B — Netlify (static recommended):
 
-   npm install
+- If your site is purely static, ensure all generated files are in the public/ folder (index.html plus assets).
+- From Netlify dashboard, "New site from Git" and point to this repo. Set the publish directory to public/.
+- Or use drag-and-drop of the public/ folder into Netlify's deploy area for a quick test.
 
-4. Выполните деплой в ветку gh-pages:
+Option C — GitHub Pages (static only):
 
-   npm run deploy:gh
+- If you prefer GitHub Pages and have static files in public/, you can deploy to GitHub Pages using gh-pages.
+- Example:
 
-Это воспользуется пакетом gh-pages и опубликует содержимое папки src на ветке gh-pages.
+  npm run deploy:gh
 
-После успешного выполнения откройте https://<your-username>.github.io/<your-repo>
+  (This runs the build script which currently is a no-op; ensure the static files are in public/ before running.)
 
-Деплой на Netlify
+Notes about GitHub Pages vs Node server:
+- GitHub Pages only serves static files. If you rely on the Node server (src/index.js) for SSR or API endpoints, deploy to a Node-friendly host (Vercel, Render, Heroku, etc.).
+- For a purely static site, skip the Node server and deploy public/ directly to a static host.
 
-Вариант A — быстрый (Drag & Drop):
-- Заархивируйте содержимое папки src или просто перетащите папку src в Netlify Drop (https://app.netlify.com/drop).
+Next steps
+----------
 
-Вариант B — через Netlify CLI (подходит для программного деплоя):
+1. Create your site content in public/index.html and related assets (css, js, images).
+2. Test locally with npm start.
+3. Choose a host and follow the corresponding section above to deploy.
 
-1. Установите netlify-cli глобально или используйте npx:
-
-   npm install -g netlify-cli
-   # или
-   npx netlify-cli login
-
-2. Авторизуйтесь:
-
-   netlify login
-
-3. Выполните команду деплоя (папка src будет опубликована):
-
-   npm run deploy:netlify
-
-Для CI/CD (рекомендуется):
-- Подключите репозиторий к Netlify через UI (New site from Git). В настройках укажите: Build command — (оставить пустым), Publish directory — src.
-
-Советы и примечания
-
-- Если вы используете GitHub Pages и хотите, чтобы корень сайта был корректным, обязательно установите поле "homepage" в package.json.
-- В gh-pages публикация создаёт ветку gh-pages и пушит в неё статические файлы.
-- Для приватных репозиториев GitHub Pages и некоторых настроек может потребоваться включить Pages в настройках репозитория.
-
-Если нужно, могу добавить CI-скрипт (GitHub Actions) для автодеплоя в gh-pages или файл netlify.toml для тонкой настройки Netlify.
+If you want, I can:
+- Create a starter public/index.html + CSS + JS skeleton for the portfolio,
+- Add a build pipeline (Webpack/Rollup) for asset bundling,
+- Add automated deployment scripts for a specific host (e.g., fully wired gh-pages workflow).
