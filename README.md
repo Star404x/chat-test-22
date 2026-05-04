@@ -1,60 +1,64 @@
-Leather — мини-сайт для демонстрации и продажи кожаных изделий.
+# Leather — мини-сайт
 
-Что сделано на этом шаге
-- Добавлены кроссбраузерные e2e тесты с Playwright (Chromium, Firefox, WebKit).
-- Добавлен CI workflow, который запускает линт/сборку/e2e тесты и Lighthouse CI.
-- Описаны шаги по локальному запуску тестов, оптимизации и деплою.
+Кратко: презентационный и коммерческий сайт для демонстрации и продажи кожаных изделий.
 
-Требования
-- Node.js 16+ (рекомендуется 18)
-- В проекте уже должен быть скрипт npm run start (локальный сервер) и npm run build.
+Что добавлено на шаге 5:
+- Скрипт сборки/оптимизации (node src/index.js build) — копирует файлы из public/ в dist/ и применяет простую минимизацию HTML/CSS/JS.
+- Простой Node.js сервер для продакшена (node src/index.js start), который обслуживает содержимое dist/.
+- GitHub Actions workflow (.github/workflows/deploy.yml) для CI/CD: запускает линт, сборку, кроссбраузерные e2e (Playwright) и деплойит dist/ в ветку gh-pages.
+- Описание процессов тестирования и деплоя в этом README.
 
-Локальное тестирование (E2E)
-1) Установите зависимости:
+Быстрый старт локально
+
+1) Установите зависимости
+
    npm ci
 
-2) Установите зависимости Playwright (браузеры):
-   npx playwright install --with-deps
+2) Подготовьте контент сайта
 
-3) Запустите e2e тесты (конфиг находится в tests/playwright.config.js):
-   npx playwright test --config=tests/playwright.config.js
+   - Разместите статические файлы (index.html, css, js, изображения) в каталоге public/
 
-Примеры полезных скриптов (добавьте в package.json, если нужно):
-{
-  "scripts": {
-    "test:e2e": "npx playwright test --config=tests/playwright.config.js",
-    "test:e2e:headed": "npx playwright test --config=tests/playwright.config.js --headed",
-    "playwright:install": "npx playwright install --with-deps",
-    "optimize": "npm run build && node scripts/optimize.js"
-  }
-}
+3) Сборка/оптимизация
 
-Оптимизация и производительность
-- Минифицируйте JS/CSS при сборке (обычно handled by bundler).
-- Включите gzip/Brotli на сервере/провайдере хостинга.
-- Настройте длительное кэширование для статических ресурсов и fingerprinting (hash в именах файлов).
-- Используйте Lighthouse (LHCI) в CI для мониторинга производительности и доступности.
+   npm run build
+
+   В результате получится оптимизированная версия в dist/
+
+4) Запуск локального сервера
+
+   npm start
+
+   Откройте http://localhost:3000
+
+Кроссбраузерное e2e тестирование
+
+- Проект уже содержит e2e тесты на Playwright (если они были добавлены ранее).
+- Запустить локально все проекты (Chromium, Firefox, WebKit):
+
+  npm run e2e
 
 CI/CD (GitHub Actions)
-- Workflow .github/workflows/ci.yml запускает: npm ci, lint (если есть), npm run build (если есть), playwright tests и LHCI.
-- В CI рекомендуется установить секреты/переменные окружения для production deploy (например, NETLIFY_AUTH_TOKEN, VERCEL_TOKEN или SSH keys).
 
-Lighthouse CI
-- В CI workflow запускается lhci autorun и публикует временный публичный отчет. Для постоянного хранения настройте сервер LHCI или интеграцию с внешними сервисами.
-- Быстрый запуск локально:
-   npx @lhci/cli autorun --upload.target=temporary-public-storage
-
-Дальнейшие рекомендации
-- Прогонять тесты в PR: настроить ветки protection и требовать прохождения CI.
-- Автоматически деплоить main -> production и develop -> staging.
-- Улучшать охват тестами: добавить проверки корзины, процесса заказа, платежных шагов (с моками).
-
-Полезные команды
+Workflow выполняется при пуше в main и делает:
 - npm ci
+- npm run lint
 - npm run build
-- npm run start
-- npx playwright test --config=tests/playwright.config.js
-- npx @lhci/cli autorun --upload.target=temporary-public-storage
+- npx playwright install --with-deps
+- npm run e2e
+- deploy dist/ в gh-pages через actions-gh-pages
 
-Контакты
-- Если CI уже настроен ранее, проверьте, чтобы в workflow были шаги сборки, тестов и perf-анализа. Если понадобится — можно расширить workflow добавлением деплоя в конце.
+Оптимизация
+
+Текущая сборка реализует базовую минимизацию (удаление комментариев и сжатие пробелов) для HTML/CSS/JS. Для более продвинутой оптимизации можно подключить esbuild/terser/clean-css, сжатие изображений и генерацию критического CSS.
+
+Советы по улучшению и деплою
+
+- Если вы хотите деплоить на Netlify/Vercel, замените шаг deploy в workflow на соответствующий action или настройку в панели сервиса.
+- Для атомарных деплоев с кэшированием и CDN рекомендую использовать Vercel/Netlify.
+- Настройте секреты и домены в настройках репозитория при необходимости.
+
+Следующие шаги (рекомендовано)
+
+- Добавить реальные e2e тесты (если их ещё нет) для основных пользовательских сценариев: просмотр каталога, добавление в корзину, отправка формы контакта.
+- Подключить линтер/форматтер и тесты unit/integration при необходимости.
+- Улучшить оптимизацию сборки (esbuild/terser/image compression) и добавить автоматический Lighthouse отчёт в CI.

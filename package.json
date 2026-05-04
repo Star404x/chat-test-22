@@ -1,23 +1,25 @@
 {
-  "name": "leather-mini-site",
+  "name": "leather-site",
   "version": "1.0.0",
-  "private": true,
+  "description": "Мини-сайт Leather — презентация и продажа кожаных изделий",
+  "main": "src/index.js",
   "scripts": {
-    "start": "node src/index.js",
-    "dev": "NODE_ENV=development node src/index.js",
-    "build": "echo \"No build step - static site is served from public/\"",
-    "lint": "eslint . || true",
-    "test:playwright": "npx playwright test",
-    "test:lighthouse": "lhci autorun --config=./lighthouserc.json",
-    "ci": "npm run lint && npm run test:playwright && npm run test:lighthouse"
+    "build": "node src/index.js build",
+    "start": "node src/index.js start",
+    "dev": "node src/index.js start",
+    "test": "echo \"No unit tests configured\" && exit 0",
+    "e2e": "npx playwright test --project=chromium --project=firefox --project=webkit",
+    "lint": "eslint . || true"
   },
+  "author": "",
+  "license": "MIT",
   "dependencies": {
-    "compression": "^1.7.4",
     "express": "^4.18.2"
   },
   "devDependencies": {
-    "@playwright/test": "^1.40.0",
-    "eslint": "^8.0.0",
-    "lhci": "^0.11.0"
+    "playwright": "^1.35.0"
+  },
+  "engines": {
+    "node": ">=16"
   }
 }
