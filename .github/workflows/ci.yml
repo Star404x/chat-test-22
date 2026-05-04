@@ -7,40 +7,52 @@ on:
     branches: [ main ]
 
 jobs:
-  build:
+  test-and-lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - name: Use Node.js
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '18'
           cache: 'npm'
-      - name: Install
+
+      - name: Install dependencies
         run: npm ci
-      - name: Lint
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+
+      - name: Run lint
         run: npm run lint
-      - name: Test
-        run: npm test
-      - name: Build
-        run: npm run build
-      - name: Upload artifact
-        if: success()
-        uses: actions/upload-artifact@v4
-        with:
-          name: site-build
-          path: public/**
+
+      - name: Run Playwright tests
+        run: npm run test:playwright
+
+      - name: Run Lighthouse CI
+        run: npm run test:lighthouse
 
   deploy:
-    needs: build
-    if: github.ref == 'refs/heads/main'
+    needs: test-and-lint
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
     steps:
-      - uses: actions/checkout@v4
-      - name: Setup Node
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '18'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build (noop or static site)
+        run: npm run build
+
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:

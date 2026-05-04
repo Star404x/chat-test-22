@@ -1,6 +1,8 @@
-node_modules
+node_modules/
 .env
+.lighthouseci/
+coverage/
 .DS_Store
-dist
-coverage
-.vscode
+dist/
+.cache/
+.playwright/
