@@ -1,35 +1,61 @@
-# Mini Site Portfolio2
+# Mini Photo Site - Backend
 
-Кратко: адаптивное мини-портфолио реализовано как serverless-функция для простого деплоя на Vercel.
+This repository contains a minimal Node.js backend for a small photo site: accepts uploads, stores files in an uploads folder, serves uploaded images and provides a simple API to list photos.
 
-Что в репозитории:
-- api/index.js — serverless-функция, возвращающая HTML сайта
-- vercel.json — маршрутизация для Vercel
-- package.json — скрипты для локальной разработки и деплоя
+Quick start (local):
 
-Требования
-- Node.js 14+ (для локальных инструментов)
-- (опционально) Vercel CLI для локальной разработки и деплоя
+1. Install dependencies
 
-Локально (предварительно установите Vercel CLI или используйте npx):
-1. Установить (опционально): npm i -g vercel
-2. Запустить локально (предпочтительно через Vercel Dev):
-   - npx vercel dev
-   или
-   - npm run dev
+   npm install
 
-Деплой на Vercel
-1. Если ещё не залогинены: npx vercel login
-2. Деплой (промежуточный/интерактивный): npx vercel
-3. Для продакшен-вывода: npm run deploy
+2. Create uploads folder (server will attempt to create it automatically, but you can manually create it if needed):
 
-Пояснения по конфигурации
-- vercel.json перенаправляет корневой URL на функцию api/index.js. Это позволяет быстро развернуть сайт без сборки статических файлов.
+   mkdir -p uploads
 
-Альтернатива — Netlify
-- Для деплоя на Netlify проще сделать статическую версию: создать папку public/ с index.html и назначить её как Publish directory в настройках Netlify.
+3. Run server
 
-Дальше
-- Заполнить содержимое портфолио (проектами, ссылками на репозитории, PDF резюме)
-- Добавить форму контакта (с обработкой через serverless-функцию или внешним сервисом)
+   npm start
+
+By default the server listens on port 3000. To change the port set the PORT environment variable:
+
+   PORT=4000 npm start
+
+Available endpoints:
+
+- GET /         -> basic health/info
+- POST /upload  -> multipart/form-data, field name: "photo" (single file). Returns JSON with file info and accessible URL.
+- GET /photos   -> JSON array listing uploaded files with URLs
+- GET /uploads/:filename -> serves uploaded image files
+
+Scripts
+
+- npm start   - run production server (node src/index.js)
+- npm run build - placeholder build script (no build step for backend-only project)
+
+Deployment
+
+Vercel:
+
+1. Install Vercel CLI (optional) and login: npm i -g vercel; vercel login
+2. Deploy: vercel --prod
+
+A vercel.json is included to run the Node server via @vercel/node.
+
+Heroku:
+
+Heroku can run this app using the start script. Example:
+
+1. heroku create
+2. git push heroku main
+
+Make sure to set any environment variables (PORT is provided by Heroku automatically).
+
+Netlify:
+
+Netlify is optimized for static sites and serverless functions. For a similar deployment on Netlify consider extracting API endpoints into Netlify Functions or deploying the backend to another host and the frontend (static) to Netlify.
+
+Next steps
+
+- Implement frontend gallery UI that uploads photos to POST /upload and displays photos from GET /photos
+- Add authentication or limits, thumbnails, and basic filtering
 

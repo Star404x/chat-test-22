@@ -1,7 +1,4 @@
 node_modules/
+uploads/
 .env
 .DS_Store
-dist/
-public/
-coverage/
-npm-debug.log
