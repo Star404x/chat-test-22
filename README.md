@@ -1,63 +1,60 @@
-# Leather — Mini-site
+Leather — мини-сайт для демонстрации и продажи кожаных изделий.
 
-Краткое руководство по локальной разработке, тестированию и CI/CD для мини-сайта Leather.
+Что сделано на этом шаге
+- Добавлены кроссбраузерные e2e тесты с Playwright (Chromium, Firefox, WebKit).
+- Добавлен CI workflow, который запускает линт/сборку/e2e тесты и Lighthouse CI.
+- Описаны шаги по локальному запуску тестов, оптимизации и деплою.
 
-Содержимое репозитория предполагает статические файлы в папке public/ и:
-- E2E тесты Playwright (кросс-браузерные)
-- Lighthouse CI (конфигурация уже добавлена)
+Требования
+- Node.js 16+ (рекомендуется 18)
+- В проекте уже должен быть скрипт npm run start (локальный сервер) и npm run build.
 
-Запуск локального сервера
+Локальное тестирование (E2E)
+1) Установите зависимости:
+   npm ci
 
-- Установите зависимости:
+2) Установите зависимости Playwright (браузеры):
+   npx playwright install --with-deps
 
-  npm ci
+3) Запустите e2e тесты (конфиг находится в tests/playwright.config.js):
+   npx playwright test --config=tests/playwright.config.js
 
-- Запустите сервер (раздаёт public/ на порту 3000):
+Примеры полезных скриптов (добавьте в package.json, если нужно):
+{
+  "scripts": {
+    "test:e2e": "npx playwright test --config=tests/playwright.config.js",
+    "test:e2e:headed": "npx playwright test --config=tests/playwright.config.js --headed",
+    "playwright:install": "npx playwright install --with-deps",
+    "optimize": "npm run build && node scripts/optimize.js"
+  }
+}
 
-  npm start
+Оптимизация и производительность
+- Минифицируйте JS/CSS при сборке (обычно handled by bundler).
+- Включите gzip/Brotli на сервере/провайдере хостинга.
+- Настройте длительное кэширование для статических ресурсов и fingerprinting (hash в именах файлов).
+- Используйте Lighthouse (LHCI) в CI для мониторинга производительности и доступности.
 
-- Откройте http://localhost:3000
+CI/CD (GitHub Actions)
+- Workflow .github/workflows/ci.yml запускает: npm ci, lint (если есть), npm run build (если есть), playwright tests и LHCI.
+- В CI рекомендуется установить секреты/переменные окружения для production deploy (например, NETLIFY_AUTH_TOKEN, VERCEL_TOKEN или SSH keys).
 
-Тестирование
+Lighthouse CI
+- В CI workflow запускается lhci autorun и публикует временный публичный отчет. Для постоянного хранения настройте сервер LHCI или интеграцию с внешними сервисами.
+- Быстрый запуск локально:
+   npx @lhci/cli autorun --upload.target=temporary-public-storage
 
-- Playwright (кросс-браузерные тесты):
+Дальнейшие рекомендации
+- Прогонять тесты в PR: настроить ветки protection и требовать прохождения CI.
+- Автоматически деплоить main -> production и develop -> staging.
+- Улучшать охват тестами: добавить проверки корзины, процесса заказа, платежных шагов (с моками).
 
-  npm run test:playwright
+Полезные команды
+- npm ci
+- npm run build
+- npm run start
+- npx playwright test --config=tests/playwright.config.js
+- npx @lhci/cli autorun --upload.target=temporary-public-storage
 
-  Playwright запускает тесты для браузеров, которые установлены командой:
-
-  npx playwright install --with-deps
-
-- Lighthouse CI (локально):
-
-  npm run test:lighthouse
-
-  Убедитесь, что в корне есть lighthouserc.json или конфигурация, используемая ранее.
-
-CI/CD
-
-- GitHub Actions настроен в .github/workflows/ci.yml
-- Workflow выполняет:
-  - установку зависимостей
-  - установку Playwright-браузеров
-  - запуск линтинга и Playwright тестов
-  - прогон Lighthouse CI
-  - деплой директории public/ на GitHub Pages при пуше в main
-
-Деплой на GitHub Pages
-
-- В текущей конфигурации используется actions-gh-pages и встроенный GITHUB_TOKEN, поэтому дополнительной настройки обычно не требуется.
-- Если вы хотите использовать персональный токен (например, для другого репозитория), добавьте секрет GH_PAGES_PAT и замените github_token в workflow.
-
-Оптимизации и рекомендации
-
-- Компрессия: сервер использует gzip через middleware compression.
-- Кэширование: статические ресурсы отдаются с заголовками cache-control, HTML не кешируется для удобства разработки.
-- Изображения: используйте оптимизацию изображений (imagemin, sharp) в build-пайплайне для сокращения веса страниц и повышения показателей Lighthouse.
-- Анализ: запускайте Lighthouse локально и смотрите отчёты, настраивайте budgets в lighthouserc.json.
-
-Дальше
-
-- Поправьте public/ (статические файлы) и тесты при необходимости.
-- Оптимизируйте изображения и шрифты, затем повторно прогоняйте Lighthouse.
-- При необходимости подключите внешнюю CD систему (Vercel/Netlify) вместо GitHub Pages.
+Контакты
+- Если CI уже настроен ранее, проверьте, чтобы в workflow были шаги сборки, тестов и perf-анализа. Если понадобится — можно расширить workflow добавлением деплоя в конце.

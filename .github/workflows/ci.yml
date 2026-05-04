@@ -7,54 +7,51 @@ on:
     branches: [ main ]
 
 jobs:
-  test-and-lint:
+  build-and-test:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
+      - name: Use Node.js 18.x
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
-          cache: 'npm'
+          node-version: 18
+
+      - name: Cache node modules
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
 
       - name: Install dependencies
         run: npm ci
+
+      - name: Run linter (if configured)
+        run: npm run lint --if-present
+
+      - name: Run build (if configured)
+        run: npm run build --if-present
 
       - name: Install Playwright browsers
         run: npx playwright install --with-deps
 
-      - name: Run lint
-        run: npm run lint
+      - name: Run Playwright E2E tests
+        run: npx playwright test --config=tests/playwright.config.js --reporter=html
 
-      - name: Run Playwright tests
-        run: npm run test:playwright
-
-      - name: Run Lighthouse CI
-        run: npm run test:lighthouse
-
-  deploy:
-    needs: test-and-lint
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Upload Playwright HTML report
+        if: always()
+        uses: actions/upload-artifact@v4
         with:
-          node-version: '18'
+          name: playwright-report
+          path: playwright-report
 
-      - name: Install dependencies
-        run: npm ci
+      - name: Run Lighthouse CI (temporary-public-storage)
+        if: success()
+        run: npx @lhci/cli@0.8.0 autorun --upload.target=temporary-public-storage
+        env:
+          LHCI_GITHUB_APP_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build (noop or static site)
-        run: npm run build
-
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./public
+  # NOTE: deploy job can be added/expanded depending on hosting e.g. Netlify, Vercel, or SSH deploy.
