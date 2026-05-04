@@ -1,16 +1,15 @@
 {
-  "name": "mini-portfolio-site",
-  "version": "1.0.0",
-  "description": "Responsive one-page portfolio site",
-  "main": "src/index.js",
+  "name": "mini-site-portfolio2",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Мини-портфолио сайт (Node.js + Vercel serverless API)",
   "scripts": {
-    "start": "node src/index.js",
-    "build": "echo \"No build step: place static files in public/ or add a build step\"",
-    "deploy:gh": "npm run build && npx gh-pages -d public"
+    "dev": "vercel dev",
+    "deploy": "vercel --prod",
+    "lint": "echo \"No lint configured\""
   },
-  "dependencies": {
-    "express": "^4.18.2"
+  "engines": {
+    "node": ">=14"
   },
-  "devDependencies": {},
   "license": "MIT"
 }
