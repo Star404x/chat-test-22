@@ -1,69 +1,77 @@
-# Minimal Portfolio
+# mini site portfolio2
 
-A minimalist single-page portfolio with responsive layout, basic SEO metadata and a small Node.js server for local testing.
+Краткое описание
 
-## Structure
+Небольшой адаптивный персональный портфолио-сайт (статический), готовый для деплоя на GitHub Pages или Netlify.
 
-- public/ - static site (index.html, assets)
-- src/index.js - minimal Express server to serve `public`
-- package.json - scripts and dependencies
+Установка и локальная отладка
 
-## Run locally
+1. Клонируйте репозиторий и перейдите в папку проекта:
 
-1. Install dependencies:
+   git clone <repo-url>
+   cd <repo-folder>
+
+2. Установите зависимости:
 
    npm install
 
-2. Start the server:
+3. Запустить локальный сервер разработки (live-server):
 
    npm start
 
-   The site will be available at http://localhost:3000
+   Откроется http://localhost:3000/index.html
 
-3. For development with auto-reload (requires nodemon):
+Структура
 
-   npm run dev
+- src/ - статические файлы сайта (index.html, index.js и т.д.)
+- package.json - npm-скрипты для локального старта и деплоя
 
-## SEO
+Деплой на GitHub Pages
 
-SEO-related metadata is included in `public/index.html`:
+1. В package.json замените поле "homepage" на реальный URL вашего GitHub Pages (например: https://your-username.github.io/your-repo).
 
-- title, description
-- canonical link
-- Open Graph and Twitter Card tags
-- JSON-LD Person schema
+2. Убедитесь, что репозиторий закоммичен и запушен в GitHub.
 
-Edit those tags in `public/index.html` to match your name, description, and URLs. Replace `/og-image.png` with an actual image path for richer cards.
+3. Установите зависимости (если ещё не сделали):
 
-## Deploy
+   npm install
 
-This project is a static site (contents of `public/`), so it can be deployed to Netlify or Vercel as a static site. Alternatively, you can deploy the Node server to platforms that support Node (Heroku, Render).
+4. Выполните деплой в ветку gh-pages:
 
-### Netlify (recommended for static)
+   npm run deploy:gh
 
-- Option A (drag & drop): Drag the `public/` folder into Netlify's Sites dashboard – this will publish the site.
+Это воспользуется пакетом gh-pages и опубликует содержимое папки src на ветке gh-pages.
 
-- Option B (from Git): Connect your Git repository to Netlify. In the site settings set:
-  - Build command: (leave empty)
-  - Publish directory: public
+После успешного выполнения откройте https://<your-username>.github.io/<your-repo>
 
-### Vercel (recommended for static)
+Деплой на Netlify
 
-- Install Vercel CLI or use the dashboard. From the repo root run:
+Вариант A — быстрый (Drag & Drop):
+- Заархивируйте содержимое папки src или просто перетащите папку src в Netlify Drop (https://app.netlify.com/drop).
 
-  vercel
+Вариант B — через Netlify CLI (подходит для программного деплоя):
 
-  When prompted, select "Other" for framework and set the Output Directory to `public`. Or connect the repo in the Vercel dashboard and set the same output dir.
+1. Установите netlify-cli глобально или используйте npx:
 
-### Deploying the Node server
+   npm install -g netlify-cli
+   # или
+   npx netlify-cli login
 
-If you prefer to run the Node server (src/index.js) on a Node-capable host (Heroku, Render, Railway):
+2. Авторизуйтесь:
 
-- Ensure `PORT` is provided by the host (the server uses process.env.PORT)
-- Push the repo, and follow the host's Node deployment instructions (start script uses `node src/index.js`).
+   netlify login
 
-## Notes & Next steps
+3. Выполните команду деплоя (папка src будет опубликована):
 
-- Replace placeholder texts, links and images in `public/index.html` with your actual content.
-- Add performance optimizations (minified assets, image optimization) and a real build pipeline if needed.
-- Optionally add CI (GitHub Actions) to auto-deploy on push to main.
+   npm run deploy:netlify
+
+Для CI/CD (рекомендуется):
+- Подключите репозиторий к Netlify через UI (New site from Git). В настройках укажите: Build command — (оставить пустым), Publish directory — src.
+
+Советы и примечания
+
+- Если вы используете GitHub Pages и хотите, чтобы корень сайта был корректным, обязательно установите поле "homepage" в package.json.
+- В gh-pages публикация создаёт ветку gh-pages и пушит в неё статические файлы.
+- Для приватных репозиториев GitHub Pages и некоторых настроек может потребоваться включить Pages в настройках репозитория.
+
+Если нужно, могу добавить CI-скрипт (GitHub Actions) для автодеплоя в gh-pages или файл netlify.toml для тонкой настройки Netlify.

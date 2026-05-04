@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Portfolio2</title>
+  <style>
+    body{font-family: Arial, Helvetica, sans-serif;margin:0;padding:0;color:#222}
+    header{background:#0a74da;color:#fff;padding:24px}
+    .container{max-width:960px;margin:24px auto;padding:0 16px}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
+    .card{border:1px solid #e0e0e0;padding:12px;border-radius:8px;background:#fff}
+    footer{padding:24px;text-align:center;color:#666}
+    a{color:#0a74da}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <h1>Имя Фамилия — Портфолио</h1>
+      <p>Краткое описание / профиль</p>
+    </div>
+  </header>
+
+  <main class="container">
+    <section id="projects">
+      <h2>Работы</h2>
+      <div id="projects-list" class="grid"></div>
+    </section>
+
+    <section id="resume">
+      <h2>Резюме</h2>
+      <div class="card">
+        <p>Краткая информация о навыках и опыте. Ссылку на подробное резюме можно добавить здесь.</p>
+      </div>
+    </section>
+
+    <section id="contacts">
+      <h2>Контакты</h2>
+      <div class="card">
+        <p>Email: <a href="mailto:you@example.com">you@example.com</a></p>
+        <p>Telegram / LinkedIn / GitHub: <a href="#">@yourhandle</a></p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <small>© <span id="year"></span> Имя Фамилия</small>
+    </div>
+  </footer>
+
+  <script src="index.js"></script>
+</body>
+</html>

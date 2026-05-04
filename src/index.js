@@ -1,16 +1,32 @@
-const express = require('express');
-const path = require('path');
-const app = express();
+// Простой скрипт для рендеринга списка проектов
+document.addEventListener('DOMContentLoaded', function () {
+  var projects = [
+    {
+      title: 'Project One',
+      description: 'Короткое описание проекта №1',
+      link: '#'
+    },
+    {
+      title: 'Project Two',
+      description: 'Короткое описание проекта №2',
+      link: '#'
+    },
+    {
+      title: 'Project Three',
+      description: 'Короткое описание проекта №3',
+      link: '#'
+    }
+  ];
 
-const PUBLIC_DIR = path.join(__dirname, '..', 'public');
-app.use(express.static(PUBLIC_DIR, { maxAge: '1d' }));
+  var list = document.getElementById('projects-list');
+  projects.forEach(function (p) {
+    var el = document.createElement('div');
+    el.className = 'card';
+    el.innerHTML = '<h3>' + p.title + '</h3>' +
+      '<p>' + p.description + '</p>' +
+      '<p><a href="' + p.link + '">Подробнее</a></p>';
+    list.appendChild(el);
+  });
 
-// SPA fallback to index.html for client-side routing
-app.get('*', (req, res) => {
-  res.sendFile(path.join(PUBLIC_DIR, 'index.html'));
-});
-
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+  document.getElementById('year').textContent = new Date().getFullYear();
 });
