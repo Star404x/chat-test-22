@@ -1,61 +1,110 @@
-# Mini Photo Site - Backend
+# Mini Photo Site
 
-This repository contains a minimal Node.js backend for a small photo site: accepts uploads, stores files in an uploads folder, serves uploaded images and provides a simple API to list photos.
+Краткое описание
 
-Quick start (local):
+Проект — небольшой адаптивный сайт для загрузки, хранения и отображения фотографий с возможностью простого шаринга. Backend написан на Node.js. Этот README содержит инструкции по локальному запуску и деплою на Heroku. Также даны краткие подсказки для развёртывания фронтенда на Netlify/GitHub Pages.
 
-1. Install dependencies
+Требования
+
+- Node.js >= 14
+- npm или yarn
+- (опционально) MongoDB или другое хранилище, если используется внешняя БД
+
+Переменные окружения
+
+Пример необходимых переменных (фактический набор зависит от реализации):
+
+- PORT — порт сервера (по умолчанию 3000)
+- MONGO_URI — строка подключения к MongoDB (если используется)
+- STORAGE_PATH — путь к локальной папке для хранения загружаемых файлов (если используется локальное хранение)
+- JWT_SECRET — секрет для генерации токенов (если есть аутентификация)
+
+Локальный запуск
+
+1. Клонируйте репозиторий и перейдите в папку проекта:
+
+   git clone <repo-url>
+   cd <repo-folder>
+
+2. Установите зависимости:
 
    npm install
+   # или
+   yarn install
 
-2. Create uploads folder (server will attempt to create it automatically, but you can manually create it if needed):
+3. Создайте файл .env в корне или экспортируйте переменные окружения. Пример .env:
 
-   mkdir -p uploads
+   PORT=3000
+   MONGO_URI=mongodb://localhost:27017/miniphotos
+   STORAGE_PATH=./uploads
+   JWT_SECRET=change_me
 
-3. Run server
+4. Запустите в режиме разработки (если настроены скрипты):
+
+   npm run dev
+
+   или для продакшн-режима:
 
    npm start
 
-By default the server listens on port 3000. To change the port set the PORT environment variable:
+После запуска сервер будет доступен по http://localhost:3000 (или по указанному PORT).
 
-   PORT=4000 npm start
+Heroku — развёртывание (Node.js backend)
 
-Available endpoints:
+1. Установите Heroku CLI: https://devcenter.heroku.com/articles/heroku-cli
 
-- GET /         -> basic health/info
-- POST /upload  -> multipart/form-data, field name: "photo" (single file). Returns JSON with file info and accessible URL.
-- GET /photos   -> JSON array listing uploaded files with URLs
-- GET /uploads/:filename -> serves uploaded image files
+2. Авторизуйтесь:
 
-Scripts
+   heroku login
 
-- npm start   - run production server (node src/index.js)
-- npm run build - placeholder build script (no build step for backend-only project)
+3. Создайте приложение на Heroku:
 
-Deployment
+   heroku create <app-name>
 
-Vercel:
+4. Установите переменные окружения на Heroku:
 
-1. Install Vercel CLI (optional) and login: npm i -g vercel; vercel login
-2. Deploy: vercel --prod
+   heroku config:set MONGO_URI="<your_mongo_uri>" JWT_SECRET="<your_jwt_secret>"
 
-A vercel.json is included to run the Node server via @vercel/node.
+   # пример для порта не нужен, Heroku сам задаёт PORT
 
-Heroku:
+5. (Опционально) Добавьте Procfile в корень репозитория с содержимым:
 
-Heroku can run this app using the start script. Example:
+   web: node src/index.js
 
-1. heroku create
-2. git push heroku main
+   Если Procfile не добавлять, Heroku автоматически запустит npm start.
 
-Make sure to set any environment variables (PORT is provided by Heroku automatically).
+6. Разверните код:
 
-Netlify:
+   git add .
+   git commit -m "Deploy to Heroku"
+   git push heroku main
 
-Netlify is optimized for static sites and serverless functions. For a similar deployment on Netlify consider extracting API endpoints into Netlify Functions or deploying the backend to another host and the frontend (static) to Netlify.
+   или, если ваша основная ветка называется master:
 
-Next steps
+   git push heroku master
 
-- Implement frontend gallery UI that uploads photos to POST /upload and displays photos from GET /photos
-- Add authentication or limits, thumbnails, and basic filtering
+7. Просмотрите логи при необходимости:
 
+   heroku logs --tail
+
+Примечания по статическому фронтенду (Netlify / GitHub Pages)
+
+Если фронтенд является отдельным SPA или статическим сайтом (например, React/Vue/Angular), то можно развернуть его отдельно:
+
+- Netlify:
+  - Выполните сборку (npm run build) и загрузите папку build/ или dist/ в Netlify либо подключите репозиторий через интерфейс Netlify.
+
+- GitHub Pages:
+  - Для простых статических сайтов можно залить собранные файлы в ветку gh-pages или использовать GitHub Actions/пакет gh-pages для деплоя.
+
+Если вы хотите хостить и фронтенд, и бекенд в одном приложении на Heroku, настройте сервер так, чтобы он отдавал статические файлы из папки сборки (например, express.static(path.join(__dirname, 'build'))).
+
+Общие советы
+
+- Для хранения фотографий в продакшне рекомендуется использовать облачные хранилища (S3, DigitalOcean Spaces и т.д.) вместо локальной файловой системы.
+- Настройте бэкап/архивацию и ограничения по размеру загружаемых файлов.
+- Добавьте базовые меры безопасности: валидация загружаемых файлов, ограничение типов и размеров, защита от CSRF при необходимости.
+
+Готово
+
+В этом шаге добавлены инструкции по запуску и деплою на Heroku. Если нужно — могу добавить пример Procfile и образец package.json/скриптов для удобного деплоя.
