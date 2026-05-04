@@ -1,19 +1,26 @@
 const express = require('express');
 const path = require('path');
-const app = express();
 
 const PORT = process.env.PORT || 3000;
 
-app.use(express.json());
-// Статические файлы фронтенда (папка public/)
-app.use(express.static(path.join(__dirname, '..', 'public')));
+const app = express();
 
-// Простая health-check точка
-app.get('/api/health', (req, res) => {
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Serve frontend static files if a build exists in /public
+const publicDir = path.join(__dirname, '..', 'public');
+app.use(express.static(publicDir));
+
+// Healthcheck
+app.get('/health', (req, res) => {
   res.json({ status: 'ok' });
 });
 
-// TODO: добавить эндпоинты для загрузки/списка/удаления фотографий
+// Placeholder for upload endpoint (to be implemented)
+app.post('/upload', (req, res) => {
+  res.status(501).json({ error: 'Not implemented' });
+});
 
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);

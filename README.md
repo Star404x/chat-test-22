@@ -1,98 +1,83 @@
-# Mini Photo Site
+# Mini Photo Site — Backend
 
-Небольшой адаптивный сайт для загрузки, хранения и шаринга фотографий.
+This repository contains a minimal Node.js/Express backend skeleton for the Mini Photo Site. It is intended to be run locally for development and deployed to Heroku for production.
 
-## Что в репозитории
+## Requirements
 
-- Node.js сервер (API и минимальная страница для тестирования загрузки/просмотра)
-- Procfile для деплоя на Heroku
-- src/config.js — утилита для чтения настроек из окружения
+- Node.js (>=14)
+- npm
+- (Optional) Heroku CLI for deployment
 
-## Требования
+## Environment variables
 
-- Node.js 16+ / npm
-- Git
-- Для продакшна: Heroku CLI (если деплоить на Heroku) или другой провайдер, поддерживающий Node.js
-- БД (например MongoDB) и/или облачное хранилище для картинок (Cloudinary/S3) при необходимости
+Recommended env variables (set locally in a .env file or in Heroku config vars):
 
-## Установка и локальный запуск
+- PORT — port for the server (defaults to 3000)
+- MONGO_URI — connection string for MongoDB (if you add DB integration)
+- STORAGE_DIR — local path for storing uploads (or configure S3/AWS creds if using remote storage)
+- AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_BUCKET — if using S3
 
-1. Склонируйте репозиторий и установите зависимости:
 
-   git clone <repo-url>
-   cd <repo>
+## Run locally
+
+1. Install dependencies:
+
    npm install
 
-2. Создайте файл .env в корне проекта, скопировав пример:
-
-   cp .env.example .env
-
-   Откройте .env и заполните переменные окружения (например, MONGODB_URI, CLOUDINARY_URL, JWT_SECRET и т. п.).
-
-3. Запуск в режиме разработки:
-
-   npm run dev
-
-   (предполагается, что в package.json есть скрипт dev, запускающий nodemon или аналог)
-
-4. Запуск в продакшн-режиме:
+2. Start the server:
 
    npm start
 
-## Переменные окружения
+   For development with auto-restart (requires nodemon):
 
-Пример всех переменных приведён в .env.example. Основные:
+   npm run start:dev
 
-- PORT — порт сервера (по умолчанию 3000)
-- MONGODB_URI — строка подключения к MongoDB
-- UPLOAD_DIR — локальная директория для временного хранения загрузок
-- CLOUDINARY_URL — облачная строка подключения (если используете Cloudinary)
-- JWT_SECRET — секрет для токенов (если используется аутентификация)
-- NODE_ENV — development|production
+3. Open http://localhost:3000/ and check health endpoint: http://localhost:3000/health
 
-Не храните реальные секреты в репозитории.
+> Note: The `public/` directory (if present) is served as static files. Place frontend build there for simple integration.
 
-## Деплой на Heroku
+## Deploy to Heroku
 
-1. Убедитесь, что у вас установлен Heroku CLI и вы залогинены:
+This backend is ready for deployment to Heroku. Steps:
+
+1. Install and login to the Heroku CLI:
+
+   https://devcenter.heroku.com/articles/heroku-cli
 
    heroku login
 
-2. Создайте приложение Heroku (если ещё нет):
+2. Create a Heroku app (or use an existing one):
 
-   heroku create <app-name>
+   heroku create your-app-name
 
-3. Установите переменные окружения на Heroku (пример):
+3. Set required config vars (example):
 
-   heroku config:set MONGODB_URI="<your_mongo_uri>" JWT_SECRET="<secret>" CLOUDINARY_URL="<cloudinary_url>"
+   heroku config:set MONGO_URI="<your_mongo_uri>" STORAGE_DIR="/tmp/uploads"
 
-4. Убедитесь, что в корне проекта есть Procfile (например: web: node src/index.js).
-
-5. Запушьте на Heroku (если ваш основной бранч main):
+4. Push to Heroku (assuming your main branch is `main`):
 
    git push heroku main
 
-   или для master:
+   If your default branch is `master`, use `git push heroku master`.
 
-   git push heroku master
+5. Open the app:
 
-6. Просмотрите логи для отладки:
+   heroku open
 
-   heroku logs --tail
+6. (Optional) Scale web dyno if needed:
 
-Советы:
-- Heroku автоматически устанавливает NODE_ENV=production.
-- Для хранения больших объёмов фото используйте облачное хранилище (S3/Cloudinary) или подключайте внешнюю базу данных/бэкенд хранилище.
+   heroku ps:scale web=1
 
-## Альтернативы
+Notes:
+- Heroku will use the `start` script from package.json to run the server.
+- For persistent file storage consider using AWS S3 or another external storage — Heroku filesystem is ephemeral.
 
-- Netlify / GitHub Pages предназначены в основном для статических сайтов — для полноценного Node.js API предпочтительнее Heroku, Render или Vercel (Serverless/FaaS).
+## About frontend deployment
 
-## Отладка
+The frontend is typically deployed separately (Netlify, GitHub Pages, etc.). This backend README focuses on running/deploying the server. If you deploy the frontend to Netlify/GitHub Pages, configure the frontend to call the backend API (set the API base URL appropriately).
 
-- Проверьте значения переменных окружения
-- Просмотрите логи (типично: npm start выводит ошибки запуска)
+## Next steps
 
-## Контакты
-
-Если нужна помощь с настройкой деплоя, добавлением облачного хранения или интеграцией с сервисом аутентификации — опишите текущую конфигурацию (env vars, используемые сервисы) и я помогу дальше.
+- Implement photo upload endpoint and storage (local or S3).
+- Add authentication (optional) and DB integration (MongoDB recommended).
+- Add integration tests and CI/CD pipeline (Heroku GitHub integration or GitHub Actions).
