@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Your Name — Minimal Portfolio</title>
+  <meta name="description" content="Minimal, responsive single-page portfolio showcasing projects, skills and contact information." />
+  <link rel="canonical" href="https://your-domain.com/" />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Your Name — Portfolio" />
+  <meta property="og:description" content="Minimal, responsive portfolio showcasing projects and skills." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://your-domain.com/" />
+  <meta property="og:image" content="/og-image.png" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Your Name — Portfolio" />
+  <meta name="twitter:description" content="Minimal, responsive portfolio showcasing projects and skills." />
+
+  <meta name="robots" content="index,follow" />
+
+  <!-- JSON-LD structured data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Your Name",
+    "url": "https://your-domain.com/",
+    "sameAs": [
+      "https://github.com/yourusername",
+      "https://linkedin.com/in/yourusername"
+    ],
+    "jobTitle": "Frontend Developer",
+    "worksFor": {
+      "@type": "Organization",
+      "name": "Your Company"
+    }
+  }
+  </script>
+
+  <style>
+    :root{--bg:#0f1724;--card:#0b1220;--accent:#7dd3fc;--muted:#94a3b8;color-scheme:dark}
+    html,body{height:100%;margin:0;font-family:system-ui,-apple-system,'Segoe UI',Roboto,'Helvetica Neue',Arial}
+    body{background:linear-gradient(180deg,#071029 0%,#091425 100%);color:#e6eef8;display:flex;align-items:center;justify-content:center;padding:32px}
+    .container{max-width:900px;width:100%}
+    header{display:flex;align-items:center;justify-content:space-between;gap:16px}
+    h1{margin:0;font-size:1.6rem}
+    p.lead{margin:8px 0 24px;color:var(--muted)}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+    .card{background:rgba(255,255,255,0.02);padding:16px;border-radius:8px;border:1px solid rgba(255,255,255,0.03)}
+    .projects .card h3{margin:0 0 8px}
+    footer{margin-top:24px;color:var(--muted);font-size:0.9rem}
+    nav{display:flex;gap:12px}
+    a{color:var(--accent);text-decoration:none}
+    @media (max-width:600px){body{padding:16px}h1{font-size:1.25rem}}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div>
+        <h1>Your Name</h1>
+        <p class="lead">Frontend developer building clean and accessible web experiences.</p>
+      </div>
+      <nav>
+        <a href="#projects">Projects</a>
+        <a href="#skills">Skills</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </header>
+
+    <main>
+      <section id="projects" class="projects" aria-labelledby="projects-heading">
+        <h2 id="projects-heading">Selected Projects</h2>
+        <div class="grid">
+          <article class="card">
+            <h3>Project One</h3>
+            <p class="muted">Short description of the project. Tech used: HTML, CSS, JS.</p>
+            <p><a href="#">Live</a> · <a href="#">Source</a></p>
+          </article>
+          <article class="card">
+            <h3>Project Two</h3>
+            <p class="muted">Short description of the project. Tech used: React, Node.</p>
+            <p><a href="#">Live</a> · <a href="#">Source</a></p>
+          </article>
+          <article class="card">
+            <h3>Project Three</h3>
+            <p class="muted">Short description of the project. Tech used: Design, Accessibility.</p>
+            <p><a href="#">Live</a> · <a href="#">Source</a></p>
+          </article>
+        </div>
+      </section>
+
+      <section id="skills" aria-labelledby="skills-heading" style="margin-top:24px">
+        <h2 id="skills-heading">Skills</h2>
+        <div class="grid">
+          <div class="card">HTML &amp; CSS</div>
+          <div class="card">JavaScript (ES6+)</div>
+          <div class="card">React / Node</div>
+        </div>
+      </section>
+
+      <section id="contact" aria-labelledby="contact-heading" style="margin-top:24px">
+        <h2 id="contact-heading">Contact</h2>
+        <div class="card">
+          <p>Email: <a href="mailto:you@domain.com">you@domain.com</a></p>
+          <p>Or find me on <a href="https://github.com/yourusername">GitHub</a> · <a href="https://linkedin.com/in/yourusername">LinkedIn</a></p>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <p>© Your Name — <a href="/">your-domain.com</a></p>
+    </footer>
+  </div>
+</body>
+</html>

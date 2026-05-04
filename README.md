@@ -1,58 +1,69 @@
-# Простой чат-бот на Node.js
+# Minimal Portfolio
 
-Этот репозиторий содержит минимальный чат-бот на Node.js, который отвечает на команды и запускается локально.
+A minimalist single-page portfolio with responsive layout, basic SEO metadata and a small Node.js server for local testing.
 
-## Предпосылки
+## Structure
 
-- Node.js 14+ и npm
+- public/ - static site (index.html, assets)
+- src/index.js - minimal Express server to serve `public`
+- package.json - scripts and dependencies
 
-## Установка
+## Run locally
 
-1. Склонируйте репозиторий и перейдите в папку проекта:
-
-   git clone <repo-url>
-   cd <repo-folder>
-
-2. Установите зависимости:
+1. Install dependencies:
 
    npm install
 
-## Настройка токена
+2. Start the server:
 
-Бот использует токен (например, токен от мессенджера или API). Токен не должен храниться в репозитории.
+   npm start
 
-1. Создайте файл `.env` в корне проекта или экспортируйте переменную окружения в вашей системе.
+   The site will be available at http://localhost:3000
 
-Пример `.env`:
+3. For development with auto-reload (requires nodemon):
 
-   BOT_TOKEN=ваш_секретный_токен
+   npm run dev
 
-> Важно: не коммитьте `.env` в репозиторий.
+## SEO
 
-## Запуск
+SEO-related metadata is included in `public/index.html`:
 
-- Запуск в продакшен-режиме:
+- title, description
+- canonical link
+- Open Graph and Twitter Card tags
+- JSON-LD Person schema
 
-  npm start
+Edit those tags in `public/index.html` to match your name, description, and URLs. Replace `/og-image.png` with an actual image path for richer cards.
 
-- Если у вас установлен nodemon и вы хотите запуск в режиме разработки (reload при изменениях):
+## Deploy
 
-  npm run dev
+This project is a static site (contents of `public/`), so it can be deployed to Netlify or Vercel as a static site. Alternatively, you can deploy the Node server to platforms that support Node (Heroku, Render).
 
-(Если нет nodemon — установите глобально или добавьте в devDependencies.)
+### Netlify (recommended for static)
 
-По умолчанию приложение запускает `src/index.js`, который должен читать переменную окружения `BOT_TOKEN` и запускать логику бота.
+- Option A (drag & drop): Drag the `public/` folder into Netlify's Sites dashboard – this will publish the site.
 
-## Пример работы
+- Option B (from Git): Connect your Git repository to Netlify. In the site settings set:
+  - Build command: (leave empty)
+  - Publish directory: public
 
-После запуска бот должен подключиться к нужному API и начать отвечать на команды. Убедитесь, что переменная `BOT_TOKEN` задана корректно.
+### Vercel (recommended for static)
 
-## Отладка
+- Install Vercel CLI or use the dashboard. From the repo root run:
 
-- Проверьте, что `BOT_TOKEN` действительно доступен в окружении процесса.
-- Проверьте логи в консоли при запуске.
+  vercel
 
-## Безопасность
+  When prompted, select "Other" for framework and set the Output Directory to `public`. Or connect the repo in the Vercel dashboard and set the same output dir.
 
-- Никогда не публикуйте ваш токен в открытом доступе.
-- Используйте `.env` или менеджер секретов в production.
+### Deploying the Node server
+
+If you prefer to run the Node server (src/index.js) on a Node-capable host (Heroku, Render, Railway):
+
+- Ensure `PORT` is provided by the host (the server uses process.env.PORT)
+- Push the repo, and follow the host's Node deployment instructions (start script uses `node src/index.js`).
+
+## Notes & Next steps
+
+- Replace placeholder texts, links and images in `public/index.html` with your actual content.
+- Add performance optimizations (minified assets, image optimization) and a real build pipeline if needed.
+- Optionally add CI (GitHub Actions) to auto-deploy on push to main.
