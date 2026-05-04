@@ -1,83 +1,67 @@
-# Mini Photo Site — Backend
+# Mini Shoes Site
 
-This repository contains a minimal Node.js/Express backend skeleton for the Mini Photo Site. It is intended to be run locally for development and deployed to Heroku for production.
+Коротко: минимальный бекенд/статический хостинг для демонстрационного сайта обуви. Включает простой Express-сервер для статики и API health, тесты и инструкции по запуску и деплою.
 
-## Requirements
+Что сделано в этом шаге:
+- Добавлен Express-сервер (src/index.js) с middleware compression для gzip-сжатия
+- Добавлен endpoint /api/health для проверки состояния
+- Настроены тесты (Jest + Supertest) в test/app.test.js
+- Добавлен .gitignore
+- Документация по локальному запуску, тестированию, оптимизации и деплою на Vercel/Netlify
 
-- Node.js (>=14)
-- npm
-- (Optional) Heroku CLI for deployment
-
-## Environment variables
-
-Recommended env variables (set locally in a .env file or in Heroku config vars):
-
-- PORT — port for the server (defaults to 3000)
-- MONGO_URI — connection string for MongoDB (if you add DB integration)
-- STORAGE_DIR — local path for storing uploads (or configure S3/AWS creds if using remote storage)
-- AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_BUCKET — if using S3
-
-
-## Run locally
-
-1. Install dependencies:
+Как запустить локально
+1. Установите зависимости:
 
    npm install
 
-2. Start the server:
+2. Запустить в режиме разработки (с автоперезапуском):
+
+   npm run dev
+
+   или просто запустить production-режим:
 
    npm start
 
-   For development with auto-restart (requires nodemon):
+3. По умолчанию сервер слушает порт 3000. Проверить health:
 
-   npm run start:dev
+   curl http://localhost:3000/api/health
 
-3. Open http://localhost:3000/ and check health endpoint: http://localhost:3000/health
+Структура проекта
+- src/index.js — основной сервер (статические файлы из /public)
+- public/ — сюда помещайте фронтенд (HTML/CSS/JS) для статического хостинга
+- test/ — тесты
 
-> Note: The `public/` directory (if present) is served as static files. Place frontend build there for simple integration.
+Тестирование
+Запустить тесты:
 
-## Deploy to Heroku
+   npm test
 
-This backend is ready for deployment to Heroku. Steps:
+Оптимизация и рекомендации
+- В production включите gzip (уже включено через compression). Для дополнительного ускорения:
+  - Установите кэширование статических файлов (Cache-Control headers)
+  - Минифицируйте и бандлите фронтенд-ассеты (используйте esbuild/webpack/rollup)
+  - Оптимизируйте изображения и используйте responsive images (srcset)
+  - Используйте критический CSS и отложенную загрузку скриптов
+  - Протестируйте производительность через Lighthouse и исправьте важные замечания
 
-1. Install and login to the Heroku CLI:
+Деплой — Vercel
+- Для простого статического варианта: поместите сгенерированные файлы в папку public и подключите репозиторий к Vercel — он автоматически задеплоит статический контент.
+- Для Node.js сервера: Vercel поддерживает Node.js Serverless Functions. Проще: разверните репозиторий как проект "Framework: Other" и укажите команды, либо используйте vercel.json для настроек. Команды:
 
-   https://devcenter.heroku.com/articles/heroku-cli
+   npm install -g vercel
+   vercel --prod
 
-   heroku login
+- Убедитесь, что скрипт start корректно запускает сервер, и в Vercel указан соответствующий entrypoint. Для простого сайта рекомендуется отдавать статику напрямую (без node), тогда деплой проще и дешевле.
 
-2. Create a Heroku app (or use an existing one):
+Деплой — Netlify
+- Netlify хорошо работает со статическими сайтами. Сгенерируйте статику в папке public (или via build step) и подключите репозиторий в Netlify.
+- Для бэкенд-функций используйте Netlify Functions (AWS Lambda) или разверните сервер отдельно.
 
-   heroku create your-app-name
+Полезные переменные окружения
+- PORT — порт сервера (по умолчанию 3000)
 
-3. Set required config vars (example):
+Следующие шаги
+- Добавить фронтенд в папку public: каталог товаров, карточки товара, корзину (client-side JS)
+- Добавить маршруты API для каталога /api/products и операций корзины
+- Настроить CI (GitHub Actions) для автотестов и автодеплоя
 
-   heroku config:set MONGO_URI="<your_mongo_uri>" STORAGE_DIR="/tmp/uploads"
-
-4. Push to Heroku (assuming your main branch is `main`):
-
-   git push heroku main
-
-   If your default branch is `master`, use `git push heroku master`.
-
-5. Open the app:
-
-   heroku open
-
-6. (Optional) Scale web dyno if needed:
-
-   heroku ps:scale web=1
-
-Notes:
-- Heroku will use the `start` script from package.json to run the server.
-- For persistent file storage consider using AWS S3 or another external storage — Heroku filesystem is ephemeral.
-
-## About frontend deployment
-
-The frontend is typically deployed separately (Netlify, GitHub Pages, etc.). This backend README focuses on running/deploying the server. If you deploy the frontend to Netlify/GitHub Pages, configure the frontend to call the backend API (set the API base URL appropriately).
-
-## Next steps
-
-- Implement photo upload endpoint and storage (local or S3).
-- Add authentication (optional) and DB integration (MongoDB recommended).
-- Add integration tests and CI/CD pipeline (Heroku GitHub integration or GitHub Actions).

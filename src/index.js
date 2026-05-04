@@ -1,27 +1,28 @@
 const express = require('express');
+const compression = require('compression');
 const path = require('path');
-
-const PORT = process.env.PORT || 3000;
 
 const app = express();
 
+// Basic optimizations
+app.use(compression()); // gzip responses
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 
-// Serve frontend static files if a build exists in /public
-const publicDir = path.join(__dirname, '..', 'public');
-app.use(express.static(publicDir));
+// Serve static frontend (place site files in /public)
+app.use(express.static(path.join(__dirname, '..', 'public')));
 
-// Healthcheck
-app.get('/health', (req, res) => {
+// Health check for tests and deployment platforms
+app.get('/api/health', (req, res) => {
   res.json({ status: 'ok' });
 });
 
-// Placeholder for upload endpoint (to be implemented)
-app.post('/upload', (req, res) => {
-  res.status(501).json({ error: 'Not implemented' });
-});
+// Export app for testing; listen only when run directly
+if (require.main === module) {
+  const port = process.env.PORT || 3000;
+  app.listen(port, () => {
+    // eslint-disable-next-line no-console
+    console.log(`Mini Shoes Site server listening on port ${port}`);
+  });
+}
 
-app.listen(PORT, () => {
-  console.log(`Server listening on port ${PORT}`);
-});
+module.exports = app;
