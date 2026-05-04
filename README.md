@@ -1,102 +1,79 @@
-Mini Shoes Site — Тестирование, оптимизация и развёртывание
+Mini Shoes Site
 
 Кратко
-Проект — мини-сайт для демонстрации и продажи обуви (Node.js + Express). Этот документ дополняет ранее созданный README и даёт пошаговые инструкции по: запуску тестов, базовой оптимизации и развёртыванию на Vercel / Netlify. Также добавлена CI-конфигурация для автоматического прогона тестов.
 
-1) Тестирование
-- Убедитесь, что зависимости установлены:
-  npm ci
+Мини-сайт для демонстрации и продажи обуви. В проекте есть локальный API (Express), сборка/оптимизация (esbuild) и тесты (Jest + Supertest).
 
-- Запуск тестов (Jest + Supertest):
-  npm test
+Требования
 
-- Локальное покрытие/отчёты (если настроено):
-  npm run test:coverage
+- Node.js >= 14 (рекомендуется 16/18)
+- npm
 
-Если тесты падают — проверьте логи и запустите отдельные тесты через jest <file>
+Установка
 
-2) Минимальная оптимизация
-- Сжатие ответов: в проект уже подключён compression middleware — это уменьшает трафик для статических/динамических ответов.
+1. Клонируйте репозиторий
+   git clone <repo-url>
+2. Установите зависимости
+   npm ci
 
-- HTTP заголовки безопасности: рекомендуется подключить helmet для базовых заголовков
-  npm install helmet --save
-  затем app.use(require('helmet')())
+Основные скрипты
 
-- Статические ассеты: отдавайте через CDN или используйте заголовки cache-control. Для статических файлов в Express:
-  app.use(express.static(path.join(__dirname, 'public'), { maxAge: '1d' }))
+- npm run dev      — запуск в режиме разработки (локальный сервер + хот-риджект, если настроено)
+- npm start        — запуск продакшн-сервера (если настроен)
+- npm test         — запуск тестов (Jest + Supertest)
+- npm run build    — сборка/оптимизация проекта (esbuild) в папку dist
 
-- Минификация и бандлинг фронтенда: если у вас есть сборка фронтенда, используйте инструмент (esbuild/webpack/rollup) и публикуйте готовые файлы в папку public или dist.
+Локальное тестирование и оптимизация
 
-- Анализ: можно добавить npm script для анализа бандла (если есть фронтенд-бандл): пример с webpack-bundle-analyzer.
+1) Запуск тестов
+   npm test
 
-3) CI (GitHub Actions)
-Файл .github/workflows/ci.yml добавлён в проект и запускается на push/pull_request. Он выполняет:
-- npm ci
-- npm test
-- npm run build (если есть)
+2) Сборка/оптимизация
+   npm run build
+   Результат сборки будет находиться в папке dist (или другой, указанной в package.json).
 
-Это даёт автоматическую проверку перед слиянием/деплоем.
+3) Локальный запуск продакшн-версии
+   После сборки запустите стартовый скрипт (если он есть):
+   npm start
 
-4) Развёртывание на Vercel
-Варианты:
-  a) Простая рекомендация (Git интеграция): подключите репозиторий к Vercel — Vercel будет автоматически запускать сборку и деплой.
-  b) Если ваш сервер — обычный Express, потребуется адаптация к serverless (рекомендуется) или использовать платформу, которая запускает постоянный Node-процесс.
+Деплой
 
-Пример: перевод серверного кода на serverless-wrapper (рекомендуется для Vercel/Netlify Functions)
-- Установите serverless-http:
-  npm install serverless-http --save
+Общие рекомендации
 
-- Создайте файл api/index.js (или functions/server.js для Netlify) с обёрткой:
-  const serverless = require('serverless-http');
-  const app = require('../src/app'); // файл, который экспортирует express app, без app.listen
-  module.exports = serverless(app);
+- Убедитесь, что ваш package.json содержит корректные скрипты "build" и "start" (или что сборка помещает артефакты в папку dist).
+- Для статического сайта укажите папку publish (обычно dist).
+- Если проект использует сервер Express, для Vercel предпочтительно превращать API в serverless-функции (папка api/) или развернуть отдельным сервером.
 
-Важно: выделите создание express-app и запуск сервера в разные файлы:
-- src/app.js — создаёт и экспортирует express app
-- src/server.js — импортирует app и запускает app.listen для локальной разработки
+Deploy на Netlify
 
-Пример структуры:
-- src/app.js  (module.exports = app)
-- src/server.js (const app = require('./app'); app.listen(PORT,...))
+1) В Netlify создайте новый сайт из репозитория.
+2) В секции Build & deploy установите:
+   Build command: npm run build
+   Publish directory: dist
+3) Добавьте переменные окружения (если нужны для сборки или API).
+4) Нажмите Deploy.
 
-Vercel config (в проекте): vercel.json. Vercel будет использовать @vercel/node для сборки serverless-функции.
+Файл конфигурации для Netlify (netlify.toml) уже добавлен в репозиторий и автоматически подхватывается Netlify.
 
-Развёртывание через Vercel CLI:
-  npm i -g vercel
-  vercel login
-  vercel --prod
+Deploy на Vercel
 
-Если используете Git-интеграцию — просто подключите репозиторий и укажите root как папку с проектом.
+1) Подключите репозиторий в Vercel.
+2) Укажите команду сборки: npm run build и Output Directory: dist (если Vercel не определит автоматически).
+3) Файл vercel.json включён в репозиторий и настроен для статического билда (использует @vercel/static-build с distDir = "dist").
+4) Если у вас есть Node API (Express), рассмотрите варианты:
+   - Перенести обработчики в serverless-функции (папка api/)
+   - Развернуть API отдельно (Heroku / Render / удалённый сервер) и использовать его URL в фронтенде
 
-5) Развёртывание на Netlify
-Netlify поддерживает функции (Netlify Functions). Подготовьте функции в папке netlify/functions, например netlify/functions/server.js — обёртка serverless-http, как указано выше.
-netlify.toml (в репозитории) настроен на использование функций и выполняет редиректы /api/* → /.netlify/functions/server
+CI (GitHub Actions)
 
-Развёртывание:
-  - Через Netlify UI: подключите репозиторий, укажите команду сборки (npm run build) и папку публикации (public или dist).
-  - Через Netlify CLI для локальной проверки функций:
-    npm i -g netlify-cli
-    netlify dev
+В репозитории добавлен workflow .github/workflows/ci.yml, который запускает тесты и сборку при пуше/PR в main. Вы можете настроить триггеры и ноды по необходимости.
 
-6) Примеры команд (резюме)
-- Установить deps: npm ci
-- Локальная разработка: npm run dev (если есть) или node src/server.js
-- Тесты: npm test
-- Сборка: npm run build
-- Запуск в проде (локально): npm start
-- Деплой на Vercel: vercel --prod
-- Деплой на Netlify: netlify deploy --prod (или через UI)
+Советы и отладка
 
-7) Перечень файлов, добавленных в этом шаге
-- .github/workflows/ci.yml — CI для прогонки тестов и сборки
-- vercel.json — рекомендации для деплоя на Vercel (builds/routes)
-- netlify.toml — базовая конфигурация для Netlify (functions и redirects)
-- README.md — этот файл (обновлён с инструкциями)
+- Если деплой падает на шаге сборки, запустите локально npm run build и проверьте ошибки.
+- Проверьте, что в package.json корректно указаны все скрипты и что devDependencies используются только для разработки.
+- Для интеграции с внешним API или секретами добавьте переменные окружения в панель Vercel/Netlify.
 
-8) Отладка и советы
-- Если endpoint /api/health работает локально, проверьте, что при переводе в serverless-обёртку приложение не пытается слушать порт (уберите app.listen из app.js).
-- Логи: в serverless-функциях используйте console.log — провайдер покажет логи в UI.
+Поддержка
 
-Если вы хотите, могу:
-- помочь создать пример api/index.js (serverless-wrapper) и переработать src/index.js на src/app.js + src/server.js,
-- добавить ESLint/Prettier и npm scripts для автоматического исправления/форматирования.
+Если что-то не работает, приведите вывод команд npm test и npm run build и файл package.json (скрипты).

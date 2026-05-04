@@ -2,18 +2,20 @@ name: CI
 
 on:
   push:
+    branches: [ main ]
   pull_request:
+    branches: [ main ]
 
 jobs:
-  test:
+  build-and-test:
     runs-on: ubuntu-latest
+
     strategy:
       matrix:
-        node-version: [16.x, 18.x]
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+        node-version: [16, 18]
 
+    steps:
+      - uses: actions/checkout@v4
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
@@ -24,10 +26,7 @@ jobs:
         run: npm ci
 
       - name: Run tests
-        run: npm test --silent
+        run: npm test
 
-      - name: Build (if available)
-        run: |
-          if npm run | grep -q "build"; then
-            npm run build --silent || true
-          fi
+      - name: Build
+        run: npm run build
