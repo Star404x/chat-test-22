@@ -1,28 +1,27 @@
 {
-  "name": "mini-site-boots",
+  "name": "leather-mini-site",
   "version": "0.1.0",
-  "description": "Mini adaptive site using Bootstrap for demo, feedback forms and basic interactivity",
+  "private": true,
   "main": "src/index.js",
   "scripts": {
     "start": "node src/index.js",
-    "dev": "nodemon src/index.js"
+    "dev": "nodemon src/index.js",
+    "build": "echo \"No build step defined; add bundler if needed\"",
+    "lint": "echo \"Add eslint or other linters\"",
+    "test": "echo \"No tests configured\"",
+    "ci": "npm run lint && npm test && npm run build",
+    "deploy": "echo \"Configure deploy script (gh-pages/vercel)\""
   },
-  "repository": {
-    "type": "git",
-    "url": ""
-  },
-  "keywords": [
-    "bootstrap",
-    "site",
-    "static",
-    "express"
-  ],
-  "author": "",
-  "license": "MIT",
   "dependencies": {
-    "express": "^4.18.2"
+    "express": "^4.18.2",
+    "compression": "^1.7.4",
+    "helmet": "^6.0.1"
   },
   "devDependencies": {
-    "nodemon": "^2.0.22"
+    "nodemon": "^2.0.22",
+    "eslint": "^8.45.0"
+  },
+  "engines": {
+    "node": ">=14"
   }
 }

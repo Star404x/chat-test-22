@@ -1,10 +1,6 @@
-node_modules/
+node_modules
 .env
 .DS_Store
-dist/
-build/
-coverage/
-npm-debug.log*
-.yarn-integrity
-.vscode/
-.idea/
+dist
+coverage
+.vscode
