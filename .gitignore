@@ -1,7 +1,5 @@
 node_modules/
-.env
-.vercel/
 dist/
+.env
 coverage/
-npm-debug.log
 .DS_Store
